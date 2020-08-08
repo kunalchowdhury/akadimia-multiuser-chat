@@ -11,7 +11,7 @@ app.use(cors())
 
 var redisConfig = {
     host: 'localhost',
-    port: 6379
+    port: 30001
 }
 
 const redis = require('socket.io-redis');
@@ -110,6 +110,57 @@ io.on('connection', function(socket){
             // can choose to broadcast it to whoever you want
             //socket.broadcast.emit('voice001', blob);
             emitter.emit('voice001', blob);
+        });
+    }
+
+    if(user === '002') {
+        socket.on('radio', function (blob) {
+            // can choose to broadcast it to whoever you want
+            //socket.broadcast.emit('voice001', blob);
+            emitter.emit('voice002', blob);
+        });
+    }
+
+    if(user === '003') {
+        socket.on('radio', function (blob) {
+            // can choose to broadcast it to whoever you want
+            //socket.broadcast.emit('voice001', blob);
+            emitter.emit('voice003', blob);
+        });
+    }
+
+    if(user === '004') {
+        socket.on('radio', function (blob) {
+            // can choose to broadcast it to whoever you want
+            //socket.broadcast.emit('voice001', blob);
+            emitter.emit('voice004', blob);
+        });
+    }
+
+    if(user === '005') {
+        socket.on('radio', function (blob) {
+            // can choose to broadcast it to whoever you want
+            //socket.broadcast.emit('voice001', blob);
+            emitter.emit('voice005', blob);
+        });
+    }
+
+    console.log("now testing 006");
+    if(user === '006') {
+        console.log('006 y');
+        socket.on('radio', function (blob) {
+            // can choose to broadcast it to whoever you want
+            //socket.broadcast.emit('voice001', blob);
+            console.log("got updates 006");
+            emitter.emit('voice006', blob);
+        });
+    }
+
+    if(user === '0000') {
+        socket.on('radio', function (blob) {
+            // can choose to broadcast it to whoever you want
+            //socket.broadcast.emit('voice001', blob);
+            emitter.emit('voice0000', blob);
         });
     }
 

@@ -1,113 +1,407 @@
 <!doctype html>
 <html>
-  <head>
-    <title>Socket.IO chat</title>
+<head>
+    <title>Akadimia Conference</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
-      * { margin: 0; padding: 0; box-sizing: border-box; }
-      body { font: 13px Helvetica, Arial; }
-      form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
-      form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
-      form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
-      #messages { list-style-type: none; margin: 0; padding: 0; }
-      #messages li { padding: 5px 10px; }
-      #messages li:nth-child(odd) { background: #eee; }
-      #messages { margin-bottom: 40px }
-      .tabcontent {
-        alignment: center;
-        margin-left: 350px;
-      }
-    </style>
-  </head>
-  <body>
-    <ul id="messages"></ul>
-    <form action="">
-      <input id="m" autocomplete="off" /><button>Send</button>
-    </form>
-    <div>
-    <video controls="" id="_video123" autoplay="autoplay"></video>
-    <video controls="" id="_video345" autoplay="autoplay"></video>
-    <video controls="" id="_video567" autoplay="autoplay"></video>
-    <video controls="" id="_video789" autoplay="autoplay"></video>
-    <video controls="" id="_video001" autoplay="autoplay"></video>
-    </div>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
-    <script>
-      $(function () {
+        body {
+            font: 13px Helvetica, Arial;
+        }
+
+        form {
+            background: #000;
+            padding: 3px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+        form input {
+            border: 0;
+            padding: 10px;
+            width: 90%;
+            margin-right: .5%;
+        }
+
+        form button {
+            width: 9%;
+            background: rgb(130, 224, 255);
+            border: none;
+            padding: 10px;
+        }
+
+        #messages {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        #messages li {
+            padding: 5px 10px;
+        }
+
+        #messages li:nth-child(odd) {
+            background: #eee;
+        }
+
+        #messages {
+            margin-bottom: 40px
+        }
+
+        div.container {
+            width: 1300px;
+            margin-top: 20px;
+            margin-left: 30px;
+        }
+
+        div.container1 {
+            width: 800px;
+            margin-left: 400px;
+            margin-top: 80px;
+        }
+
+        div.container2 {
+            width: 200px;
+            height: 380px;
+            margin-left: 1100px;
+            overflow: scroll;
+            position: absolute;
+            top: 160px;
+            background-color: #cec7c5;
+
+        }
+
+        div.item {
+            vertical-align: top;
+            display: inline-block;
+            text-align: center;
+            margin-left: 1px;
+            margin-right: 1px;
+        }
+
+        img {
+            width: 100px;
+            height: 100px;
+            background-color: grey;
+        }
+
+        .caption {
+            display: block;
+            block-size: 1px;
+            font-size: 10px;
+            font-family: sans-serif;
+
+        }
+        .caption1 {
+            display: block;
+            block-size: 1px;
+            font-size: 12px;
+            margin-left: 140px;
+            font-family: "Open Sans Semibold",serif;
+
+        }
+    </style>
+</head>
+<body>
+<form action="">
+    <input id="m" autocomplete="off"/>
+    <button>Send</button>
+</form>
+<div class="container">
+    <div class="item">
+        <video controls="" id="_video123" autoplay="autoplay" width="120px" ></video>
+        <span class="caption" id="123"></span>
+    </div>
+    <div class="item">
+        <video controls="" id="_video345" autoplay="autoplay" width="120px" ></video>
+        <span class="caption" id="345"></span>
+    </div>
+    <div class="item">
+        <video controls="" id="_video567" autoplay="autoplay" width="120px" ></video>
+        <span class="caption" id="567"></span>
+    </div>
+    <div class="item">
+        <video controls="" id="_video789" autoplay="autoplay" width="120px" ></video>
+        <span class="caption" id="789"></span>
+    </div>
+    <div class="item">
+        <video controls="" id="_video001" autoplay="autoplay" width="120px" ></video>
+        <span class="caption" id="001"></span>
+    </div>
+    <div class="item">
+        <video controls="" id="_video002" autoplay="autoplay" width="120px" ></video>
+        <span class="caption" id="002"></span>
+    </div>
+    <div class="item">
+        <video controls="" id="_video003" autoplay="autoplay" width="120px" ></video>
+        <span class="caption" id="003"></span>
+    </div>
+    <div class="item">
+        <video controls="" id="_video004" autoplay="autoplay" width="120px" ></video>
+        <span class="caption" id="004"></span>
+    </div>
+    <div class="item">
+        <video controls="" id="_video005" autoplay="autoplay" width="120px" ></video>
+        <span class="caption" id="005"></span>
+    </div>
+    <div class="item">
+        <video controls="" id="_video006" autoplay="autoplay" width="120px" ></video>
+        <span class="caption" id="006"></span>
+    </div>
+</div>
+<div class="container1">
+    <video controls="" id="_video0000" autoplay="autoplay" height="250px" width="380px"></video>
+    <span class="caption1" id="0000" ></span>
+    <br>
+    <br>
+
+    <button style="font-size:24px;margin-left: 110px" id="videoFlag" ><i class="fa fa-video-camera" style="font-size:30px;color:blue"></i>
+    <button style="font-size:24px;margin-left: 30px" id="audioFlag" ><i class="fa fa-phone" style="font-size:30px;color:blue"></i>
+    <button style="font-size:24px;margin-left: 30px" id="screemShareFlag" ><i class="fa fa-share" style="font-size:30px;color:blue"></i>
+
+</div>
+<div class="container2">
+    <ul id="messages"></ul>
+</div>
+<script src="/socket.io/socket.io.js"></script>
+<script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+<script>
+
+    $(function () {
         //const socket = io('https://192.168.1.3:5000?user=abc');
-        const socket = io('https://192.168.1.3:3050?'+window.location.search.substr(1));
-        var myId = '';
-        $('form').submit(function(){
-          socket.emit('chat message', $('#m').val());
-          $('#m').val('');
-          return false;
+        const socket = io('https://192.168.1.3:3050?' + window.location.search.substr(1));
+        let users = new Map();
+        let audioCodecMap = new Map();
+        socket.emit('sendconnstr','');
+        let myId = '';
+        $('form').submit(function () {
+            socket.emit('chat message', $('#m').val());
+            $('#m').val('');
+            return false;
         });
-        socket.on('chat message', function(msg){
-          $('#messages').append($('<li>').text(msg));
-          window.scrollTo(0, document.body.scrollHeight);
+        socket.on('chat message', function (msg) {
+            var txt1 = $("<b></b>").text(users.get(String(msg.split('>')[0]).trim())+":") ;
+            var txt2 = $("<p></p>").text(msg.split('>')[1]) ;
+            var txt3 = $("<li></li>").append(txt1, txt2);
+
+            $('#messages').append(txt3);
+            let element = document.getElementById("messages");
+            element.scrollTop = element.scrollHeight;
+          //  window.scrollTo(0, document.body.scrollHeight);
+        });
+
+        socket.on('connstr', function (msg) {
+            /*var video = $('<video />', {
+                id: '_video006',
+                type: 'video/webm',
+                controls: true,
+                autoplay: "autoplay",
+                width: "120px"
+            });
+            var video1 = $('<div />', {class: 'item'}).append(video);
+
+            //$('#container').append(video1);
+
+            video1.appendTo( ".container" );
+
+            alert("DONE") ;*/
+            //video.appendTo($('#container'));
+           let comps = msg.split(';');
+           comps.forEach(element => {
+               document.getElementById(element.split('=')[0]).textContent = element.split('=')[1];
+               users.set(element.split('=')[0], element.split('=')[1]);
+           });
+
         });
 
         socket.on('whoami', function (msg) {
-          myId = msg.toString();
-         // alert(myId);
+            myId = msg.toString();
+            // alert(myId);
         })
 
-        var constraints = {
-          audio: true,
-          video: { width: 200, height: 200 }
-        };
+        socket.on('pausevideo', function (msg) {
+            let v1 = document.getElementById("_video"+msg);
+            v1.pause();
+            v1.currentTime = 0;
+        });
 
-        navigator.mediaDevices.getUserMedia(constraints).then(function(mediaStream) {
+        socket.on('playvideo', function (msg) {
+            let v1 = document.getElementById("_video"+msg);
+          //  audioCodecMap.delete(msg);
+           // v1.load();
+            const playPromise = v1.play();
 
-          switch(myId) {
-            case "123":
-              document.getElementById("_video123").srcObject = mediaStream;
-              break;
-            case "345":
-              document.getElementById("_video345").srcObject = mediaStream;
-              break;
-            case "567":
-              document.getElementById("_video567").srcObject = mediaStream;
-              break;
-            case "789":
-              document.getElementById("_video789").srcObject = mediaStream;
-              break;
-            case "001":
-              document.getElementById("_video001").srcObject = mediaStream;
-              break;
-            default:
-          }
-          var mediaRecorder = new MediaRecorder(mediaStream);
-          mediaRecorder.onstart = function(e) {
-            this.chunks = [];
-
-          };
-          mediaRecorder.ondataavailable = function(e) {
-            this.chunks.push(e.data);
-          };
-          mediaRecorder.onstop = function(e) {
-            var blob = new Blob(this.chunks, { type: 'video/webm'  });
-            socket.emit('radio', blob);
-          };
-
-          // Start recording
-          mediaRecorder.start();
-
-          // Stop recording after 5 seconds and broadcast it to server
-          setInterval(function() {
-            mediaRecorder.stop();
-            mediaRecorder.start();
-          }, 500);
-
+            if (playPromise !== undefined) {
+                playPromise.then(_ => {
+                    // Automatic playback started!
+                    // Show playing UI.
+                })
+                    .catch(error => {
+                        // Auto-play was prevented
+                        // Show paused UI.
+                    });
+            }
 
         });
 
+        socket.on('audiocodec', function (msg) {
+           // alert(msg);
+            audioCodecMap.set(msg, 'audio/ogg; codecs=opus');
+        });
+
+        let video = false;
+        let audio = true;
+        let shareScreen = false;
+        let mediaRecorder ;
+        let timer ;
+
+        function mediaDeviceCall() {
+            const constraints = {
+                audio: {echoCancellation: true},
+                video: {width: 400, height: 200}
+            };
+
+            navigator.mediaDevices.getUserMedia(constraints).then(function (mediaStream) {
+
+                switch (myId) {
+                    case "123":
+                        document.getElementById("_video123").srcObject = mediaStream;
+                        break;
+                    case "345":
+                        document.getElementById("_video345").srcObject = mediaStream;
+                        break;
+                    case "567":
+                        document.getElementById("_video567").srcObject = mediaStream;
+                        break;
+                    case "789":
+                        document.getElementById("_video789").srcObject = mediaStream;
+                        break;
+                    case "001":
+                        document.getElementById("_video001").srcObject = mediaStream;
+                        break;
+                    case "002":
+                        document.getElementById("_video002").srcObject = mediaStream;
+                        break;
+                    case "003":
+                        document.getElementById("_video003").srcObject = mediaStream;
+                        break;
+                    case "004":
+                        document.getElementById("_video004").srcObject = mediaStream;
+                        break;
+                    case "005":
+                        document.getElementById("_video005").srcObject = mediaStream;
+                        break;
+                    case "006":
+                        document.getElementById("_video006").srcObject = mediaStream;
+                        break;
+                    case "0000":
+                        document.getElementById("_video0000").srcObject = mediaStream;
+                        break;
+                    default:
+                }
+                mediaRecorder = new MediaRecorder(mediaStream);
+                mediaRecorder.onstart = function (e) {
+                    this.chunks = [];
+
+                };
+                mediaRecorder.ondataavailable = function (e) {
+                    this.chunks.push(e.data);
+                };
+                mediaRecorder.onstop = function (e) {
+                    const curType = (video) ? 'video/webm' : 'audio/ogg; codecs=opus';
+                    const blob = new Blob(this.chunks, {type: 'video/webm'});
+                    socket.emit('radio'+myId, blob);
+                };
+
+                // Start recording
+                mediaRecorder.start();
+
+                // Stop recording after 5 seconds and broadcast it to server
+                timer = setInterval(function () {
+                        mediaRecorder.stop();
+                        mediaRecorder.start();
+                }, 500);
+
+
+            });
+        }
+
+        $('#videoFlag').click(function() {
+            video = ! video;
+            if(video || audio) {
+                if(!video){
+                    socket.emit('onlyaudio', myId);
+                }
+                let elem = document.getElementById("_video"+myId);
+                const playPromise = elem.play();
+
+                if (playPromise !== undefined) {
+                    playPromise.then(_ => {
+                        // Automatic playback started!
+                        // Show playing UI.
+                    })
+                        .catch(error => {
+                            // Auto-play was prevented
+                            // Show paused UI.
+                        });
+                }
+                socket.emit('videon', myId);
+                mediaDeviceCall();
+            }else if(timer) {
+                let elem = document.getElementById("_video"+myId);
+                elem.pause();
+                socket.emit('videoff', myId);
+                clearTimeout(timer);
+            }
+        });
+
+        $('#audioFlag').click(function() {
+            audio = ! audio;
+            if(video || audio) {
+                let elem = document.getElementById("_video"+myId);
+                const playPromise = elem.play();
+
+                if (playPromise !== undefined) {
+                    playPromise.then(_ => {
+                        // Automatic playback started!
+                        // Show playing UI.
+                    })
+                        .catch(error => {
+                            // Auto-play was prevented
+                            // Show paused UI.
+                        });
+                }
+                socket.emit('videon', myId);
+                mediaDeviceCall();
+            }else if(timer) {
+                let elem = document.getElementById("_video"+myId);
+                elem.pause();
+                socket.emit('videoff', myId);
+                clearTimeout(timer);
+            }
+        });
+
         const arrayOfBlobs123 = [];
+        const arrayOfBlobs123Voice = [];
+
         const arrayOfBlobs345 = [];
         const arrayOfBlobs567 = [];
         const arrayOfBlobs789 = [];
         const arrayOfBlobs001 = [];
+
+        const arrayOfBlobs002 = [];
+        const arrayOfBlobs003 = [];
+        const arrayOfBlobs004 = [];
+        const arrayOfBlobs005 = [];
+        const arrayOfBlobs006 = [];
+        const arrayOfBlobs0000 = [];
 
         // 1. Create a `MediaSource`
         const mediaSource123 = new MediaSource();
@@ -115,6 +409,13 @@
         const mediaSource567 = new MediaSource();
         const mediaSource789 = new MediaSource();
         const mediaSource001 = new MediaSource();
+
+        const mediaSource002 = new MediaSource();
+        const mediaSource003 = new MediaSource();
+        const mediaSource004 = new MediaSource();
+        const mediaSource005 = new MediaSource();
+        const mediaSource006 = new MediaSource();
+        const mediaSource0000 = new MediaSource();
 
 
         // 2. Create an object URL from the `MediaSource`
@@ -124,32 +425,19 @@
         const url789 = URL.createObjectURL(mediaSource789);
         const url001 = URL.createObjectURL(mediaSource001);
 
+        const url002 = URL.createObjectURL(mediaSource002);
+        const url003 = URL.createObjectURL(mediaSource003);
+        const url004 = URL.createObjectURL(mediaSource004);
+        const url005 = URL.createObjectURL(mediaSource005);
+        const url006 = URL.createObjectURL(mediaSource006);
+        const url0000 = URL.createObjectURL(mediaSource0000);
+
         // 3. Set the video's `src` to the object URL
         const video123 = document.getElementById("_video123");
         video123.src = url123;
 
-        /*video123.addEventListener('loadedmetadata', function() {
-          if (video123.buffered.length === 0) {
-         //   appendToSourceBuffer123();
-            return ;
-          };
-
-          var bufferedSeconds = video123.buffered.end(0) - video123.buffered.start(0);
-          //alert(bufferedSeconds + ' seconds of video are ready to play!');
-        });*/
-
         const video345 = document.getElementById("_video345");
         video345.src = url345;
-
-       /* video345.addEventListener('loadedmetadata', function() {
-          if (video345.buffered.length === 0) {
-         //   appendToSourceBuffer345();
-            return;
-          };
-
-          var bufferedSeconds = video345.buffered.end(0) - video345.buffered.start(0);
-          //alert(bufferedSeconds + ' seconds of video are ready to play!');
-        });*/
 
         const video567 = document.getElementById("_video567");
         video567.src = url567;
@@ -160,302 +448,432 @@
         const video001 = document.getElementById("_video001");
         video001.src = url001;
 
-        // When the client receives a voice message it will play the sound
-        socket.on('voice123', function(arrayBuffer) {
-          // let video = document.getElementById('_video123');
-          //  video.pause();
-        //  var blob = new Blob([arrayBuffer], {  type: 'video/webm'  });
-          // var audio = document.createElement('audio');
-          //  audio.src = window.URL.createObjectURL(blob);
-          //  audio.play();
-          //video.setAttribute('src', URL.createObjectURL(blob));
-          // video.load();
-          // video.play();
-          //alert(arrayBuffer.byteLength);
-          arrayOfBlobs123.push(arrayBuffer);
-         // arrayOfBlobs123.push(URL.createObjectURL(blob));
-          appendToSourceBuffer123();
+        const video002 = document.getElementById("_video002");
+        video002.src = url002;
 
+        const video003 = document.getElementById("_video003");
+        video003.src = url003;
+
+        const video004 = document.getElementById("_video004");
+        video004.src = url004;
+
+        const video005 = document.getElementById("_video005");
+        video005.src = url005;
+
+        const video006 = document.getElementById("_video006");
+        video006.src = url006;
+
+        const video0000 = document.getElementById("_video0000");
+        video0000.src = url0000;
+
+        socket.on('voice123', function (arrayBuffer) {
+           // if(myId !== '123') {
+                /*if(audioCodecMap.has('123')) {
+                    let blob = new Blob([arrayBuffer], {'type': 'audio/ogg; codecs=opus'});
+                    video123.src = window.URL.createObjectURL(blob);
+                   // video123.play();
+                }else {*/
+                    arrayOfBlobs123.push(arrayBuffer);
+                    appendToSourceBuffer123();
+                //}
+
+           // }
         });
 
-        socket.on('voice345', function(arrayBuffer) {
-          // let video = document.getElementById('_video345');
-          // video.pause();
-          //var blob = new Blob([arrayBuffer], {  type: 'video/webm' });
-          // var audio = document.createElement('audio');
-          //  audio.src = window.URL.createObjectURL(blob);
-          //  audio.play();
-          // video.setAttribute('src', URL.createObjectURL(blob));
-          //  video.load();
-          // video.play();
-
-          //arrayOfBlobs345.push(URL.createObjectURL(blob));
-          //alert('got something..345 ',arrayBuffer.size);
-          arrayOfBlobs345.push(arrayBuffer);
-          appendToSourceBuffer345();
+        socket.on('voice345', function (arrayBuffer) {
+            if(myId !== '345') {
+                arrayOfBlobs345.push(arrayBuffer);
+                appendToSourceBuffer345();
+            }
         });
 
-        socket.on('voice567', function(arrayBuffer) {
-          // let video = document.getElementById('_video567');
-          // video.pause();
-          var blob = new Blob([arrayBuffer], {  type: 'video/webm' });
-          // var audio = document.createElement('audio');
-          //  audio.src = window.URL.createObjectURL(blob);
-          //  audio.play();
-          //  video.setAttribute('src', URL.createObjectURL(blob));
-          //  video.load();
-          //  video.play();
-
-         // arrayOfBlobs567.push(URL.createObjectURL(blob));
-          arrayOfBlobs567.push(arrayBuffer);
-          appendToSourceBuffer567();
+        socket.on('voice567', function (arrayBuffer) {
+            if(myId !== '567') {
+                arrayOfBlobs567.push(arrayBuffer);
+                appendToSourceBuffer567();
+            }
         });
 
-        socket.on('voice789', function(arrayBuffer) {
-          // let video = document.getElementById('_video567');
-          // video.pause();
-          var blob = new Blob([arrayBuffer], {  type: 'video/webm' });
-          // var audio = document.createElement('audio');
-          //  audio.src = window.URL.createObjectURL(blob);
-          //  audio.play();
-          //  video.setAttribute('src', URL.createObjectURL(blob));
-          //  video.load();
-          //  video.play();
-
-          // arrayOfBlobs567.push(URL.createObjectURL(blob));
-          arrayOfBlobs789.push(arrayBuffer);
-          appendToSourceBuffer789();
+        socket.on('voice789', function (arrayBuffer) {
+            if(myId !== '789') {
+                arrayOfBlobs789.push(arrayBuffer);
+                appendToSourceBuffer789();
+            }
         });
 
-        socket.on('voice001', function(arrayBuffer) {
-          // let video = document.getElementById('_video567');
-          // video.pause();
-          var blob = new Blob([arrayBuffer], {  type: 'video/webm' });
-          // var audio = document.createElement('audio');
-          //  audio.src = window.URL.createObjectURL(blob);
-          //  audio.play();
-          //  video.setAttribute('src', URL.createObjectURL(blob));
-          //  video.load();
-          //  video.play();
+        socket.on('voice001', function (arrayBuffer) {
+            if(myId !== '001') {
 
-          // arrayOfBlobs567.push(URL.createObjectURL(blob));
-          arrayOfBlobs001.push(arrayBuffer);
-          appendToSourceBuffer001();
+                arrayOfBlobs001.push(arrayBuffer);
+                appendToSourceBuffer001();
+            }
         });
 
-
-        // 4. On the `sourceopen` event, create a `SourceBuffer`
-        var sourceBuffer123 = null;
-        mediaSource123.addEventListener("sourceopen", function()
-        {
-
-          // NOTE: Browsers are VERY picky about the codec being EXACTLY
-          // right here. Make sure you know which codecs you're using!
-          sourceBuffer123 = mediaSource123.addSourceBuffer("video/webm; codecs=\"opus,vp8\"");
-
-
-          // If we requested any video data prior to setting up the SourceBuffer,
-          // we want to make sure we only append one blob at a time
-          sourceBuffer123.addEventListener("playing", appendToSourceBuffer123);
-
+        socket.on('voice002', function (arrayBuffer) {
+            if(myId !== '002') {
+                arrayOfBlobs002.push(arrayBuffer);
+                appendToSourceBuffer002();
+            }
         });
 
-        var sourceBuffer345 = null;
-        mediaSource345.addEventListener("sourceopen", function()
-        {
-          // NOTE: Browsers are VERY picky about the codec being EXACTLY
-          // right here. Make sure you know which codecs you're using!
-          sourceBuffer345 = mediaSource345.addSourceBuffer("video/webm; codecs=\"opus,vp8\"");
-
-          // If we requested any video data prior to setting up the SourceBuffer,
-          // we want to make sure we only append one blob at a time
-          sourceBuffer345.addEventListener("playing", appendToSourceBuffer345);
+        socket.on('voice003', function (arrayBuffer) {
+            if(myId !== '003') {
+                arrayOfBlobs003.push(arrayBuffer);
+                appendToSourceBuffer003();
+            }
         });
 
-        var sourceBuffer567 = null;
-        mediaSource567.addEventListener("sourceopen", function()
-        {
-          // NOTE: Browsers are VERY picky about the codec being EXACTLY
-          // right here. Make sure you know which codecs you're using!
-          sourceBuffer567 = mediaSource567.addSourceBuffer("video/webm; codecs=\"opus,vp8\"");
-
-          // If we requested any video data prior to setting up the SourceBuffer,
-          // we want to make sure we only append one blob at a time
-          sourceBuffer567.addEventListener("playing", appendToSourceBuffer567);
+        socket.on('voice004', function (arrayBuffer) {
+            if(myId !== '004') {
+                arrayOfBlobs004.push(arrayBuffer);
+                appendToSourceBuffer004();
+            }
         });
 
-        var sourceBuffer789 = null;
-        mediaSource789.addEventListener("sourceopen", function()
-        {
-          // NOTE: Browsers are VERY picky about the codec being EXACTLY
-          // right here. Make sure you know which codecs you're using!
-          sourceBuffer789 = mediaSource789.addSourceBuffer("video/webm; codecs=\"opus,vp8\"");
-
-          // If we requested any video data prior to setting up the SourceBuffer,
-          // we want to make sure we only append one blob at a time
-          sourceBuffer789.addEventListener("playing", appendToSourceBuffer789);
+        socket.on('voice005', function (arrayBuffer) {
+            if(myId !== '005') {
+                arrayOfBlobs005.push(arrayBuffer);
+                appendToSourceBuffer005();
+            }
         });
 
-        var sourceBuffer001 = null;
-        mediaSource001.addEventListener("sourceopen", function()
-        {
-          // NOTE: Browsers are VERY picky about the codec being EXACTLY
-          // right here. Make sure you know which codecs you're using!
-          sourceBuffer001 = mediaSource001.addSourceBuffer("video/webm; codecs=\"opus,vp8\"");
+        socket.on('voice006', function (arrayBuffer) {
+            if(myId !== '006') {
+                arrayOfBlobs006.push(arrayBuffer);
+                appendToSourceBuffer006();
+            }
+        });
 
-          // If we requested any video data prior to setting up the SourceBuffer,
-          // we want to make sure we only append one blob at a time
-          sourceBuffer001.addEventListener("playing", appendToSourceBuffer001);
+        socket.on('voice0000', function (arrayBuffer) {
+            if(myId !== '0000') {
+                arrayOfBlobs0000.push(arrayBuffer);
+                appendToSourceBuffer0000();
+            }
+        });
+
+        let sourceBuffer123 = null;
+        mediaSource123.addEventListener("sourceopen", function () {
+            sourceBuffer123 = mediaSource123.addSourceBuffer("video/webm; codecs=\"opus,vp8\"");
+            sourceBuffer123.addEventListener("playing", appendToSourceBuffer123);
+        });
+
+        let sourceBuffer345 = null;
+        mediaSource345.addEventListener("sourceopen", function () {
+            sourceBuffer345 = mediaSource345.addSourceBuffer("video/webm; codecs=\"opus,vp8\"");
+            sourceBuffer345.addEventListener("playing", appendToSourceBuffer345);
+        });
+
+        let sourceBuffer567 = null;
+        mediaSource567.addEventListener("sourceopen", function () {
+            sourceBuffer567 = mediaSource567.addSourceBuffer("video/webm; codecs=\"opus,vp8\"");
+            sourceBuffer567.addEventListener("playing", appendToSourceBuffer567);
+        });
+
+        let sourceBuffer789 = null;
+        mediaSource789.addEventListener("sourceopen", function () {
+            sourceBuffer789 = mediaSource789.addSourceBuffer("video/webm; codecs=\"opus,vp8\"");
+            sourceBuffer789.addEventListener("playing", appendToSourceBuffer789);
+        });
+
+        let sourceBuffer001 = null;
+        mediaSource001.addEventListener("sourceopen", function () {
+            sourceBuffer001 = mediaSource001.addSourceBuffer("video/webm; codecs=\"opus,vp8\"");
+            sourceBuffer001.addEventListener("playing", appendToSourceBuffer001);
+        });
+
+        let sourceBuffer002 = null;
+        mediaSource002.addEventListener("sourceopen", function () {
+            sourceBuffer002 = mediaSource002.addSourceBuffer("video/webm; codecs=\"opus,vp8\"");
+            sourceBuffer002.addEventListener("playing", appendToSourceBuffer002);
+        });
+
+        let sourceBuffer003 = null;
+        mediaSource003.addEventListener("sourceopen", function () {
+            sourceBuffer003 = mediaSource003.addSourceBuffer("video/webm; codecs=\"opus,vp8\"");
+            sourceBuffer003.addEventListener("playing", appendToSourceBuffer003);
+        });
+
+        let sourceBuffer004 = null;
+        mediaSource004.addEventListener("sourceopen", function () {
+            sourceBuffer004 = mediaSource004.addSourceBuffer("video/webm; codecs=\"opus,vp8\"");
+            sourceBuffer004.addEventListener("playing", appendToSourceBuffer004);
+        });
+
+        let sourceBuffer005 = null;
+        mediaSource005.addEventListener("sourceopen", function () {
+            sourceBuffer005 = mediaSource005.addSourceBuffer("video/webm; codecs=\"opus,vp8\"");
+            sourceBuffer005.addEventListener("playing", appendToSourceBuffer005);
+        });
+
+        let sourceBuffer006 = null;
+        mediaSource006.addEventListener("sourceopen", function () {
+            sourceBuffer006 = mediaSource006.addSourceBuffer("video/webm; codecs=\"opus,vp8\"");
+            sourceBuffer006.addEventListener("playing", appendToSourceBuffer006);
+        });
+
+        let sourceBuffer0000 = null;
+        mediaSource0000.addEventListener("sourceopen", function () {
+            sourceBuffer0000 = mediaSource0000.addSourceBuffer("video/webm; codecs=\"opus,vp8\"");
+            sourceBuffer0000.addEventListener("playing", appendToSourceBuffer0000);
         });
 
         function appendToSourceBuffer123() {
-          //alert("gtiiti----");
-          if (
-                  mediaSource123.readyState === "open" &&
-                  sourceBuffer123 &&
-                  sourceBuffer123.updating === false
-          ) {
-            //  alert("gtiiti");
+            if (
+                mediaSource123.readyState === "open" &&
+                sourceBuffer123 &&
+                sourceBuffer123.updating === false
+            ) {
+                if (arrayOfBlobs123.length) {
+                    let data = arrayOfBlobs123.shift();
+                    sourceBuffer123.appendBuffer(data);
+                    if (video123.buffered.length &&
+                        video123.buffered.end(0) - video123.buffered.start(0) < 10) {
+                        video123.currentTime = 0.01;
+                    }
 
-            if(arrayOfBlobs123.length) {
-              let data = arrayOfBlobs123.shift();
-             // alert("success123");
-              sourceBuffer123.appendBuffer(data);
-              if(video123.buffered.length &&
-                      video123.buffered.end(0) - video123.buffered.start(0) < 5) {
-                video123.currentTime = 0.01;
-              }
-              //video123.play();
-
+                }
             }
-          }
-
-          // Limit the total buffer size to 20 minutes
-          // This way we don't run out of RAM
-          if (
-                  video123.buffered.length &&
-                  video123.buffered.end(0) - video123.buffered.start(0) > 1200
-          ) {
-            sourceBuffer123.remove(0, video123.buffered.end(0) - 1200)
-          }
+            /*if (
+                video123.buffered.length &&
+                video123.buffered.end(0) - video123.buffered.start(0) > 1200
+            ) {
+                sourceBuffer123.remove(0, video123.buffered.end(0) - 1200)
+            }*/
         }
 
         function appendToSourceBuffer345() {
-          if (
-                  mediaSource345.readyState === "open" &&
-                  sourceBuffer345 &&
-                  sourceBuffer345.updating === false
-          ) {
+            if (
+                mediaSource345.readyState === "open" &&
+                sourceBuffer345 &&
+                sourceBuffer345.updating === false
+            ) {
 
-            if(arrayOfBlobs345.length) {
-              let data = arrayOfBlobs345.shift();
-              //alert("success345");
-              sourceBuffer345.appendBuffer(data);
-              if(video345.buffered.end(0) - video345.buffered.start(0) < 5) {
-                video345.currentTime = 0.01;
-              }
-          //    video345.currentTime = 0.01;
-            //  video1345.play();
-
+                if (arrayOfBlobs345.length) {
+                    let data = arrayOfBlobs345.shift();
+                    sourceBuffer345.appendBuffer(data);
+                    if (video345.buffered.end(0) - video345.buffered.start(0) < 5) {
+                        video345.currentTime = 0.01;
+                    }
+                }
             }
-            // sourceBuffer345.appendBuffer(arrayOfBlobs345.shift());
-          }
 
-          // Limit the total buffer size to 20 minutes
-          // This way we don't run out of RAM
-          if (
-                  video345.buffered.length &&
-                  video345.buffered.end(0) - video345.buffered.start(0) > 1200
-          ) {
-            sourceBuffer345.remove(0, video345.buffered.end(0) - 1200)
-          }
+            if (
+                video345.buffered.length &&
+                video345.buffered.end(0) - video345.buffered.start(0) > 1200
+            ) {
+                sourceBuffer345.remove(0, video345.buffered.end(0) - 1200)
+            }
         }
 
-        function appendToSourceBuffer567()
-        {
-          if (
-                  mediaSource567.readyState === "open" &&
-                  sourceBuffer567 &&
-                  sourceBuffer567.updating === false
-          )
-          {
-            let data = arrayOfBlobs567.shift();
-            //alert("success345");
-            sourceBuffer567.appendBuffer(data);
-            if(video567.buffered.end(0) - video567.buffered.start(0) < 10) {
-              video567.currentTime = 0.01;
+        function appendToSourceBuffer567() {
+            if (
+                mediaSource567.readyState === "open" &&
+                sourceBuffer567 &&
+                sourceBuffer567.updating === false
+            ) {
+                let data = arrayOfBlobs567.shift();
+                //alert("success345");
+                sourceBuffer567.appendBuffer(data);
+                if (video567.buffered.end(0) - video567.buffered.start(0) < 10) {
+                    video567.currentTime = 0.01;
+                }
             }
-          }
 
-          // Limit the total buffer size to 20 minutes
-          // This way we don't run out of RAM
-          if (
-                  video567.buffered.length &&
-                  video567.buffered.end(0) - video567.buffered.start(0) > 1200
-          )
-          {
-            sourceBuffer567.remove(0, video567.buffered.end(0) - 1200)
-          }
+            if (
+                video567.buffered.length &&
+                video567.buffered.end(0) - video567.buffered.start(0) > 1200
+            ) {
+                sourceBuffer567.remove(0, video567.buffered.end(0) - 1200)
+            }
         }
 
-        function appendToSourceBuffer789()
-        {
-          if (
-                  mediaSource789.readyState === "open" &&
-                  sourceBuffer789 &&
-                  sourceBuffer789.updating === false
-          )
-          {
-            let data = arrayOfBlobs789.shift();
-            //alert("success345");
-            sourceBuffer789.appendBuffer(data);
-            if(video789.buffered.end(0) - video789.buffered.start(0) < 10) {
-              video789.currentTime = 0.01;
+        function appendToSourceBuffer789() {
+            if (
+                mediaSource789.readyState === "open" &&
+                sourceBuffer789 &&
+                sourceBuffer789.updating === false
+            ) {
+                let data = arrayOfBlobs789.shift();
+                //alert("success345");
+                sourceBuffer789.appendBuffer(data);
+                if (video789.buffered.end(0) - video789.buffered.start(0) < 10) {
+                    video789.currentTime = 0.01;
+                }
             }
-          }
 
-          // Limit the total buffer size to 20 minutes
-          // This way we don't run out of RAM
-          if (
-                  video789.buffered.length &&
-                  video789.buffered.end(0) - video789.buffered.start(0) > 1200
-          )
-          {
-            sourceBuffer789.remove(0, video789.buffered.end(0) - 1200)
-          }
+            // Limit the total buffer size to 20 minutes
+            // This way we don't run out of RAM
+            if (
+                video789.buffered.length &&
+                video789.buffered.end(0) - video789.buffered.start(0) > 1200
+            ) {
+                sourceBuffer789.remove(0, video789.buffered.end(0) - 1200)
+            }
         }
 
 
-        function appendToSourceBuffer001()
-        {
-          if (
-                  mediaSource001.readyState === "open" &&
-                  sourceBuffer001 &&
-                  sourceBuffer001.updating === false
-          )
-          {
-            let data = arrayOfBlobs001.shift();
-            //alert("success345");
-            sourceBuffer001.appendBuffer(data);
-            if(video001.buffered.end(0) - video001.buffered.start(0) < 10) {
-              video001.currentTime = 0.01;
+        function appendToSourceBuffer001() {
+            if (
+                mediaSource001.readyState === "open" &&
+                sourceBuffer001 &&
+                sourceBuffer001.updating === false
+            ) {
+                let data = arrayOfBlobs001.shift();
+                sourceBuffer001.appendBuffer(data);
+                if (video001.buffered.end(0) - video001.buffered.start(0) < 10) {
+                    video001.currentTime = 0.01;
+                }
             }
-          }
 
-          // Limit the total buffer size to 20 minutes
-          // This way we don't run out of RAM
-          if (
-                  video001.buffered.length &&
-                  video001.buffered.end(0) - video001.buffered.start(0) > 1200
-          )
-          {
-            sourceBuffer001.remove(0, video001.buffered.end(0) - 1200)
-          }
+            // Limit the total buffer size to 20 minutes
+            // This way we don't run out of RAM
+           /* if (
+                video001.buffered.length &&
+                video001.buffered.end(0) - video001.buffered.start(0) > 1200
+            ) {
+                sourceBuffer001.remove(0, video001.buffered.end(0) - 1200)
+            }*/
         }
 
+        function appendToSourceBuffer002() {
+            if (
+                mediaSource002.readyState === "open" &&
+                sourceBuffer002 &&
+                sourceBuffer002.updating === false
+            ) {
+                let data = arrayOfBlobs002.shift();
+                sourceBuffer002.appendBuffer(data);
+                if (video002.buffered.end(0) - video002.buffered.start(0) < 10) {
+                    video002.currentTime = 0.01;
+                }
+            }
 
+            // Limit the total buffer size to 20 minutes
+            // This way we don't run out of RAM
+            if (
+                video002.buffered.length &&
+                video002.buffered.end(0) - video002.buffered.start(0) > 1200
+            ) {
+                sourceBuffer002.remove(0, video002.buffered.end(0) - 1200)
+            }
+        }
 
-      });
-    </script>
-  </body>
+        function appendToSourceBuffer003() {
+            if (
+                mediaSource003.readyState === "open" &&
+                sourceBuffer003 &&
+                sourceBuffer003.updating === false
+            ) {
+                let data = arrayOfBlobs003.shift();
+                sourceBuffer003.appendBuffer(data);
+                if (video003.buffered.end(0) - video003.buffered.start(0) < 10) {
+                    video003.currentTime = 0.01;
+                }
+            }
+
+            // Limit the total buffer size to 20 minutes
+            // This way we don't run out of RAM
+            if (
+                video003.buffered.length &&
+                video003.buffered.end(0) - video003.buffered.start(0) > 1200
+            ) {
+                sourceBuffer003.remove(0, video003.buffered.end(0) - 1200)
+            }
+        }
+
+        function appendToSourceBuffer004() {
+            if (
+                mediaSource004.readyState === "open" &&
+                sourceBuffer004 &&
+                sourceBuffer004.updating === false
+            ) {
+                let data = arrayOfBlobs004.shift();
+                sourceBuffer004.appendBuffer(data);
+                if (video004.buffered.end(0) - video004.buffered.start(0) < 10) {
+                    video004.currentTime = 0.01;
+                }
+            }
+
+            // Limit the total buffer size to 20 minutes
+            // This way we don't run out of RAM
+            if (
+                video004.buffered.length &&
+                video004.buffered.end(0) - video004.buffered.start(0) > 1200
+            ) {
+                sourceBuffer004.remove(0, video004.buffered.end(0) - 1200)
+            }
+        }
+
+        function appendToSourceBuffer005() {
+            if (
+                mediaSource005.readyState === "open" &&
+                sourceBuffer005 &&
+                sourceBuffer005.updating === false
+            ) {
+                let data = arrayOfBlobs005.shift();
+                sourceBuffer005.appendBuffer(data);
+                if (video005.buffered.end(0) - video005.buffered.start(0) < 10) {
+                    video005.currentTime = 0.01;
+                }
+            }
+
+            // Limit the total buffer size to 20 minutes
+            // This way we don't run out of RAM
+            if (
+                video005.buffered.length &&
+                video005.buffered.end(0) - video005.buffered.start(0) > 1200
+            ) {
+                sourceBuffer005.remove(0, video005.buffered.end(0) - 1200)
+            }
+        }
+
+        function appendToSourceBuffer006() {
+            if (
+                mediaSource006.readyState === "open" &&
+                sourceBuffer006 &&
+                sourceBuffer006.updating === false
+            ) {
+                let data = arrayOfBlobs006.shift();
+                sourceBuffer006.appendBuffer(data);
+                if (video006.buffered.end(0) - video006.buffered.start(0) < 10) {
+                    video006.currentTime = 0.01;
+                }
+            }
+
+            // Limit the total buffer size to 20 minutes
+            // This way we don't run out of RAM
+            if (
+                video006.buffered.length &&
+                video006.buffered.end(0) - video006.buffered.start(0) > 1200
+            ) {
+                sourceBuffer006.remove(0, video006.buffered.end(0) - 1200)
+            }
+        }
+
+        function appendToSourceBuffer0000() {
+            if (
+                mediaSource0000.readyState === "open" &&
+                sourceBuffer0000 &&
+                sourceBuffer0000.updating === false
+            ) {
+                let data = arrayOfBlobs0000.shift();
+                sourceBuffer0000.appendBuffer(data);
+                if (video0000.buffered.end(0) - video0000.buffered.start(0) < 10) {
+                    video0000.currentTime = 0.01;
+                }
+            }
+
+            // Limit the total buffer size to 20 minutes
+            // This way we don't run out of RAM
+            if (
+                video0000.buffered.length &&
+                video0000.buffered.end(0) - video0000.buffered.start(0) > 1200
+            ) {
+                sourceBuffer0000.remove(0, video0000.buffered.end(0) - 1200)
+            }
+        }
+
+    });
+</script>
+</body>
 </html>
