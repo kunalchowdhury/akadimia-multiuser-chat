@@ -4,6 +4,7 @@
     <title>Akadimia Conference</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
     <style>
         * {
             margin: 0;
@@ -108,6 +109,7 @@
 
         }
     </style>
+
 </head>
 <body>
 <form action="">
@@ -116,7 +118,7 @@
 </form>
 <div class="container">
     <div class="item">
-        <video controls="" id="_video123" autoplay="autoplay" width="120px" ></video>
+        <video controls="" id="_video123" autoplay="autoplay" preload="none"  width="120px" ></video>
         <span class="caption" id="123"></span>
     </div>
     <div class="item">
@@ -132,7 +134,7 @@
         <span class="caption" id="789"></span>
     </div>
     <div class="item">
-        <video controls="" id="_video001" autoplay="autoplay" width="120px" ></video>
+        <video controls="" id="_video001" autoplay="autoplay" preload="none" width="120px" ></video>
         <span class="caption" id="001"></span>
     </div>
     <div class="item">
@@ -162,9 +164,9 @@
     <br>
     <br>
 
-    <button style="font-size:24px;margin-left: 110px" id="videoFlag" ><i class="fa fa-video-camera" style="font-size:30px;color:blue"></i>
-    <button style="font-size:24px;margin-left: 30px" id="audioFlag" ><i class="fa fa-phone" style="font-size:30px;color:blue"></i>
-    <button style="font-size:24px;margin-left: 30px" id="screemShareFlag" ><i class="fa fa-share" style="font-size:30px;color:blue"></i>
+    <button style="font-size:24px;margin-left: 110px" id="videoFlag" ><i class="fa fa-video-camera" style="font-size:30px;color:blue"></i> </button>
+    <button style="font-size:24px;margin-left: 30px" id="audioFlag" ><i class="fa fa-phone" style="font-size:30px;color:blue"></i></button>
+    <button style="font-size:24px;margin-left: 30px" id="screemShareFlag" ><i class="fa fa-share" style="font-size:30px;color:blue"></i></button>
 
 </div>
 <div class="container2">
@@ -234,9 +236,9 @@
 
         socket.on('playvideo', function (msg) {
             let v1 = document.getElementById("_video"+msg);
-          //  audioCodecMap.delete(msg);
+            audioCodecMap.delete(msg);
            // v1.load();
-            const playPromise = v1.play();
+           /* const playPromise = v1.play();
 
             if (playPromise !== undefined) {
                 playPromise.then(_ => {
@@ -248,7 +250,7 @@
                         // Show paused UI.
                     });
             }
-
+*/
         });
 
         socket.on('audiocodec', function (msg) {
@@ -265,7 +267,7 @@
         function mediaDeviceCall() {
             const constraints = {
                 audio: {echoCancellation: true},
-                video: {width: 400, height: 200}
+                video: (video) ? {width: 400, height: 200} : false
             };
 
             navigator.mediaDevices.getUserMedia(constraints).then(function (mediaStream) {
@@ -316,7 +318,7 @@
                 };
                 mediaRecorder.onstop = function (e) {
                     const curType = (video) ? 'video/webm' : 'audio/ogg; codecs=opus';
-                    const blob = new Blob(this.chunks, {type: 'video/webm'});
+                    const blob = new Blob(this.chunks, {type: curType});
                     socket.emit('radio'+myId, blob);
                 };
 
@@ -327,7 +329,7 @@
                 timer = setInterval(function () {
                         mediaRecorder.stop();
                         mediaRecorder.start();
-                }, 500);
+                }, 1000);
 
 
             });
@@ -338,6 +340,8 @@
             if(video || audio) {
                 if(!video){
                     socket.emit('onlyaudio', myId);
+                }else {
+                    socket.emit('videon', myId);
                 }
                 let elem = document.getElementById("_video"+myId);
                 const playPromise = elem.play();
@@ -352,12 +356,11 @@
                             // Show paused UI.
                         });
                 }
-                socket.emit('videon', myId);
                 mediaDeviceCall();
             }else if(timer) {
                 let elem = document.getElementById("_video"+myId);
                 elem.pause();
-                socket.emit('videoff', myId);
+                socket.emit('alloff', myId);
                 clearTimeout(timer);
             }
         });
@@ -367,7 +370,11 @@
             if(video || audio) {
                 let elem = document.getElementById("_video"+myId);
                 const playPromise = elem.play();
-
+                if(!video){
+                    socket.emit('onlyaudio', myId);
+                }else {
+                    socket.emit('videon', myId);
+                }
                 if (playPromise !== undefined) {
                     playPromise.then(_ => {
                         // Automatic playback started!
@@ -378,12 +385,12 @@
                             // Show paused UI.
                         });
                 }
-                socket.emit('videon', myId);
+
                 mediaDeviceCall();
             }else if(timer) {
                 let elem = document.getElementById("_video"+myId);
                 elem.pause();
-                socket.emit('videoff', myId);
+                socket.emit('alloff', myId);
                 clearTimeout(timer);
             }
         });
@@ -467,17 +474,18 @@
         video0000.src = url0000;
 
         socket.on('voice123', function (arrayBuffer) {
-           // if(myId !== '123') {
-                /*if(audioCodecMap.has('123')) {
+            if(myId !== '123') {
+                if(audioCodecMap.has('123')) {
+               //     arrayOfBlobs123.splice(0, arrayOfBlobs123.length);
                     let blob = new Blob([arrayBuffer], {'type': 'audio/ogg; codecs=opus'});
                     video123.src = window.URL.createObjectURL(blob);
                    // video123.play();
-                }else {*/
+                }else {
                     arrayOfBlobs123.push(arrayBuffer);
                     appendToSourceBuffer123();
-                //}
+                }
 
-           // }
+            }
         });
 
         socket.on('voice345', function (arrayBuffer) {
@@ -502,11 +510,10 @@
         });
 
         socket.on('voice001', function (arrayBuffer) {
-            if(myId !== '001') {
-
+           // if(myId !== '001') {
                 arrayOfBlobs001.push(arrayBuffer);
                 appendToSourceBuffer001();
-            }
+         //   }
         });
 
         socket.on('voice002', function (arrayBuffer) {

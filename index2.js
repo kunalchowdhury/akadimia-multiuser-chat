@@ -7,6 +7,16 @@
 //firewall-cmd --zone=public --add-port=30005/tcp --permanent
 //firewall-cmd --zone=public --add-port=30006/tcp --permanent
 
+/*
+*
+*  proxy_set_header   X-Forwarded-For $remote_addr;
+           proxy_set_header   Host $http_host;
+           proxy_http_version 1.1;
+           proxy_set_header   Upgrade $http_upgrade;
+           proxy_set_header   Connection "upgrade";
+* */
+
+
 var fs = require('fs');
 var https = require('https');
 
@@ -99,138 +109,180 @@ if (!sticky.listen(server, serverPort)) {
     });
 } else {
     console.log('server started on %s port CHILD', serverPort);
+    io.on('connection', function (socket) {
+        console.log(`${socket.id} connected `);
+        let message = socket.handshake.headers.referer;
+        let user = message.split("?")[1].split("=")[1]
+        console.log(user === '123');
+
+        //emitter.emit('connect123', 'Connected');
+        socket.emit('whoami', user);
+
+        socket.on('sendconnstr', function (msg) {
+            nodeClient1.get("connection_str", function (err, reply) {
+                // reply is null when the key is missing
+                console.log(err);
+                io.emit('connstr', reply);
+            });
+        });
+
+        socket.on('chat message', function (msg) {
+            //io.emit('chat message', msg);
+
+            io.emit('chat message', user + ' > ' + msg);
+        });
+
+        socket.on('alloff', function (msg) {
+            io.emit('pausevideo', msg);
+        });
+        socket.on('videoon', function (msg) {
+            io.emit('playvideo', msg);
+        });
+        socket.on('onlyaudio', function (msg) {
+            io.emit('audiocodec', msg);
+        });
+
+        socket.join('voice' + user);
+
+        if (user === '123') {
+            socket.on('radio123', function (blob) {
+                // can choose to broadcast it to whoever you want
+                //  socket.broadcast.emit('voice123', blob);
+                //   io.emit('voice123', blob);
+                // console.log('emitting to voice001');
+                io.to('voice345').to('voice567').to('voice789')
+                    .to('voice001').to('voice002').to('voice003')
+                    .to('voice004').to('voice005').to('voice006')
+                    .to('voice0000').emit('voice123', blob);
+            });
+        }
+
+        if (user === '345') {
+            console.log('got message from 345');
+            socket.on('radio', function (blob) {
+
+                // can choose to broadcast it to whoever you want
+                //  socket.broadcast.emit('voice345', blob);
+                // io.emit('voice345', blob);
+                io.to('voice123').to('voice567').to('voice789')
+                    .to('voice001').to('voice002').to('voice003')
+                    .to('voice004').to('voice005').to('voice006')
+                    .to('voice0000').emit('voice345', blob);
+            });
+        }
+
+        if (user === '567') {
+            socket.on('radio', function (blob) {
+                // can choose to broadcast it to whoever you want
+                // socket.broadcast.emit('voice567', blob);
+                //  io.emit('voice567', blob);
+                io.to('voice123').to('voice345').to('voice789')
+                    .to('voice001').to('voice002').to('voice003')
+                    .to('voice004').to('voice005').to('voice006')
+                    .to('voice0000').emit('voice567', blob);
+            });
+        }
+
+        if (user === '789') {
+            socket.on('radio', function (blob) {
+                // can choose to broadcast it to whoever you want
+                // socket.broadcast.emit('voice789', blob);
+                //  io.emit('voice789', blob);
+                io.to('voice123').to('voice345').to('voice567')
+                    .to('voice001').to('voice002').to('voice003')
+                    .to('voice004').to('voice005').to('voice006')
+                    .to('voice0000').emit('voice789', blob);
+            });
+        }
+
+        if (user === '001') {
+            socket.on('radio001', function (blob) {
+                // can choose to broadcast it to whoever you want
+                // socket.broadcast.emit('voice001', blob);
+                // io.emit('voice001', blob);
+                //  console.log('emitting to voice123');
+                // io.to('voice123').emit('voice001', blob);
+                io.to('voice123').to('voice345').to('voice567')
+                    .to('voice789').to('voice002').to('voice003')
+                    .to('voice004').to('voice005').to('voice006')
+                    .to('voice0000').emit('voice001', blob);
+            });
+        }
+
+        if (user === '002') {
+            socket.on('radio', function (blob) {
+                // can choose to broadcast it to whoever you want
+                // socket.broadcast.emit('voice001', blob);
+                // io.emit('voice002', blob);
+                io.to('voice123').to('voice345').to('voice567')
+                    .to('voice789').to('voice001').to('voice003')
+                    .to('voice004').to('voice005').to('voice006')
+                    .to('voice0000').emit('voice002', blob);
+            });
+        }
+
+        if (user === '003') {
+            socket.on('radio', function (blob) {
+                // can choose to broadcast it to whoever you want
+                // socket.broadcast.emit('voice001', blob);
+                // io.emit('voice003', blob);
+                io.to('voice123').to('voice345').to('voice567')
+                    .to('voice789').to('voice001').to('voice002')
+                    .to('voice004').to('voice005').to('voice006')
+                    .to('voice0000').emit('voice003', blob);
+            });
+        }
+
+        if (user === '004') {
+            socket.on('radio', function (blob) {
+                // can choose to broadcast it to whoever you want
+                // socket.broadcast.emit('voice001', blob);
+                // io.emit('voice004', blob);
+                io.to('voice123').to('voice345').to('voice567')
+                    .to('voice789').to('voice001').to('voice002')
+                    .to('voice003').to('voice005').to('voice006')
+                    .to('voice0000').emit('voice004', blob);
+            });
+        }
+
+        if (user === '005') {
+            socket.on('radio', function (blob) {
+                // can choose to broadcast it to whoever you want
+                // socket.broadcast.emit('voice001', blob);
+                // io.emit('voice005', blob);
+                io.to('voice123').to('voice345').to('voice567')
+                    .to('voice789').to('voice001').to('voice002')
+                    .to('voice003').to('voice004').to('voice006')
+                    .to('voice0000').emit('voice005', blob);
+            });
+        }
+
+        if (user === '006') {
+            socket.on('radio', function (blob) {
+                // can choose to broadcast it to whoever you want
+                //  socket.broadcast.emit('voice001', blob);
+                //io.emit('voice006', blob);
+                io.to('voice123').to('voice345').to('voice567')
+                    .to('voice789').to('voice001').to('voice002')
+                    .to('voice003').to('voice004').to('voice005')
+                    .to('voice0000').emit('voice006', blob);
+            });
+        }
+
+        if (user === '0000') {
+            socket.on('radio', function (blob) {
+                // can choose to broadcast it to whoever you want
+                // socket.broadcast.emit('voice001', blob);
+                //io.emit('voice0000', blob);
+                io.to('voice123').to('voice345').to('voice567')
+                    .to('voice789').to('voice001').to('voice002')
+                    .to('voice003').to('voice004').to('voice005')
+                    .to('voice006').emit('voice0000', blob);
+            });
+        }
+
+    });
 }
-
-io.on('connection', function(socket){
-    console.log(`${socket.id} connected `);
-    let message = socket.handshake.headers.referer;
-    let user = message.split("?")[1].split("=")[1]
-    console.log(user === '123');
-
-    //emitter.emit('connect123', 'Connected');
-    socket.emit('whoami', user);
-
-    socket.on('sendconnstr', function(msg){
-        nodeClient1.get("connection_str", function(err, reply) {
-            // reply is null when the key is missing
-            console.log(err);
-            io.emit('connstr', reply);
-        });});
-
-    socket.on('chat message', function(msg){
-        //io.emit('chat message', msg);
-
-        io.emit('chat message', user+' > '+msg);
-    });
-
-    socket.on('videoff', function(msg){
-        io.emit('pausevideo', msg);
-    });
-    socket.on('videoon', function(msg){
-        io.emit('playvideo', msg);
-    });
-    socket.on('onlyaudio', function(msg){
-        io.emit('audiocodec', msg);
-    });
-
-    socket.join('voice'+user) ;
-    console.log('joined- voice'+user);
-    if(user === '123') {
-        socket.on('radio123', function (blob) {
-            // can choose to broadcast it to whoever you want
-          //  socket.broadcast.emit('voice123', blob);
-         //   io.emit('voice123', blob);
-            console.log('emitting to voice001');
-            io.sockets.in('voice001').emit(blob);
-        });
-    }
-
-    if(user === '345') {
-        console.log('got message from 345');
-        socket.on('radio', function (blob) {
-
-            // can choose to broadcast it to whoever you want
-          //  socket.broadcast.emit('voice345', blob);
-            io.emit('voice345', blob);
-        });
-    }
-
-    if(user === '567') {
-        socket.on('radio', function (blob) {
-            // can choose to broadcast it to whoever you want
-         // socket.broadcast.emit('voice567', blob);
-            io.emit('voice567', blob);
-        });
-    }
-
-    if(user === '789') {
-        socket.on('radio', function (blob) {
-            // can choose to broadcast it to whoever you want
-           // socket.broadcast.emit('voice789', blob);
-            io.emit('voice789', blob);
-        });
-    }
-
-    if(user === '001') {
-        socket.on('radio001', function (blob) {
-            // can choose to broadcast it to whoever you want
-           // socket.broadcast.emit('voice001', blob);
-           // io.emit('voice001', blob);
-            console.log('emitting to voice123');
-            io.sockets.in('voice123').emit(blob);
-        });
-    }
-
-    if(user === '002') {
-        socket.on('radio', function (blob) {
-            // can choose to broadcast it to whoever you want
-           // socket.broadcast.emit('voice001', blob);
-            io.emit('voice002', blob);
-        });
-    }
-
-    if(user === '003') {
-        socket.on('radio', function (blob) {
-            // can choose to broadcast it to whoever you want
-           // socket.broadcast.emit('voice001', blob);
-            io.emit('voice003', blob);
-        });
-    }
-
-    if(user === '004') {
-        socket.on('radio', function (blob) {
-            // can choose to broadcast it to whoever you want
-           // socket.broadcast.emit('voice001', blob);
-            io.emit('voice004', blob);
-        });
-    }
-
-    if(user === '005') {
-        socket.on('radio', function (blob) {
-            // can choose to broadcast it to whoever you want
-           // socket.broadcast.emit('voice001', blob);
-            io.emit('voice005', blob);
-        });
-    }
-
-    if(user === '006') {
-        socket.on('radio', function (blob) {
-            // can choose to broadcast it to whoever you want
-          //  socket.broadcast.emit('voice001', blob);
-            io.emit('voice006', blob);
-        });
-    }
-
-    if(user === '0000') {
-        socket.on('radio', function (blob) {
-            // can choose to broadcast it to whoever you want
-           // socket.broadcast.emit('voice001', blob);
-            io.emit('voice0000', blob);
-        });
-    }
-
-});
-
 
 
 
