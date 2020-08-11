@@ -59,12 +59,12 @@
         div.container {
             width: 1300px;
             margin-top: 20px;
-            margin-left: 30px;
+            margin-left: 20px;
         }
 
         div.container1 {
-            width: 800px;
-            margin-left: 400px;
+            width: 900px;
+            margin-left: 200px;
             margin-top: 80px;
         }
 
@@ -159,12 +159,20 @@
     </div>
 </div>
 <div class="container1">
-    <video controls="" id="_video0000" autoplay="autoplay" height="200px" width="400px"></video>
+    <div class="item">
+        <video controls="" id="_video0000" autoplay="autoplay" width="400px" height="200"  ></video>
+
+    </div>
+    <div class="item">
+        <video controls="" id="_video0000Screen" autoplay="autoplay" width="400px" height="200" ></video>
+
+    </div>
+
     <span class="caption1" id="0000" ></span>
     <br>
     <br>
 
-    <button style="font-size:24px;margin-left: 120px" id="videoFlag" ><i class="fa fa-video-camera" style="font-size:30px;color:blue"></i> </button>
+    <button style="font-size:24px;margin-left: 320px" id="videoFlag" ><i class="fa fa-video-camera" style="font-size:30px;color:blue"></i> </button>
     <button style="font-size:24px;margin-left: 30px" id="audioFlag" ><i class="fa fa-phone" style="font-size:30px;color:blue"></i></button>
     <button style="font-size:24px;margin-left: 30px" id="screenShareFlag" ><i class="fa fa-share" style="font-size:30px;color:blue"></i></button>
 
@@ -186,6 +194,7 @@
         let timer ;
         let mediaStreamCur ;
         let screenStreamCur ;
+        let mediaConns = [];
 
         const constraints = {
             audio: audio ? {echoCancellation: true} : false,
@@ -269,6 +278,13 @@
                 ]} /* Sample servers, please use appropriate ones */
         });
 
+        var peerScreen = new Peer({
+            config: {'iceServers': [
+                    { url: 'stun:stun.l.google.com:19302' }
+
+                ]} /* Sample servers, please use appropriate ones */
+        });
+
 
         socket.on('whoami', function (msg) {
             myId = msg.toString();
@@ -279,6 +295,15 @@
                     sessionStorage.setItem('open'+myId, 'sent');
                 }
             });
+
+            peerScreen.on('open', function(id) {
+                let val = sessionStorage.getItem('openscreen'+myId);
+                if(val !== 'sent') {
+                    socket.emit('peerinfoscreen', myId + "-" + id);
+                    sessionStorage.setItem('openscreen'+myId, 'sent');
+                }
+            });
+
             const constraints = {
                 audio: audio ? {echoCancellation: true} : false,
                 video: video ? {width: 400, height: 200} :false
@@ -287,11 +312,28 @@
             peer.on('call', function (call){
 
               //  navigator.mediaDevices.getUserMedia(constraints).then(function (mediaStream) {
-                   call.answer(shareScreen ? screenStreamCur : mediaStreamCur);
+                   call.answer(mediaStreamCur);
                // });
             });
 
+            peerScreen.on('call', function (call){
+                //alert(shareScreen +" "+ screenStreamCur +" " + mediaStreamCur);
+                call.answer(shareScreen ? screenStreamCur : mediaStreamCur);
+                call.on('stream', function (remoteStream) {
+                    //   call.answer(shareScreen ? screenStreamCur : mediaStreamCur);
+                   // alert('FROM INSIDE');
+                    if(myId !== '0000') {
+                        document.getElementById("_video0000Screen").srcObject = remoteStream;
+                    }
+                });
+            });
+
+
         })
+
+        socket.on('newpeerscreen', function (msg){
+            sessionStorage.setItem('allpeersscreen'+myId, msg);
+        });
 
         socket.on('newpeer', function (msg){
             sessionStorage.setItem('allpeers'+myId, msg);
@@ -303,14 +345,28 @@
                         let peerIdComps = elem.split("-");
                         ////alert(peerIdComps[0]+","+peerIdComps[1]);
                         if (peer && !connectedPeers.has(peerIdComps[0])) {
-                            let call = peer.call(peerIdComps[1], (shareScreen) ? screenStreamCur : mediaStreamCur);
+                            let call = peer.call(peerIdComps[1], mediaStreamCur);
                             call.on('stream', function (remoteStream) {
-                                localStream = remoteStream;
                                 document.getElementById("_video" + peerIdComps[0]).srcObject = remoteStream;
                                 connectedPeers.add(peerIdComps[0]);
+                                mediaConns.push(call);
                             });
                         }
                     });
+
+                   /* let peersScreen = sessionStorage.getItem('allpeersscreen'+myId).split(",");
+                    peersScreen.forEach(elem => {
+                        let peerIdComps = elem.split("-");
+                        if(peerIdComps[0] == '0000'){
+                            let call = peerScreen.call(peerIdComps[1], mediaStreamCur);
+                            call.on('stream', function (remoteStream) {
+                                document.getElementById("_video" + peerIdComps[0]).srcObject = remoteStream;
+                                //connectedPeers.add(peerIdComps[0]);
+                                //mediaConns.push(call);
+                            });
+                        }
+
+                    });*/
                // });
             }
 
@@ -336,52 +392,18 @@
 
 
         function mediaDeviceCall(peer) {
-           switch (myId) {
-                    case "123":
-                        document.getElementById("_video123").srcObject = mediaStreamCur;
-                        break;
-                    case "345":
-                        document.getElementById("_video345").srcObject = mediaStreamCur;
-                        break;
-                    case "567":
-                        document.getElementById("_video567").srcObject = mediaStreamCur;
-                        break;
-                    case "789":
-                        document.getElementById("_video789").srcObject = mediaStreamCur;
-                        break;
-                    case "001":
-                        document.getElementById("_video001").srcObject = mediaStreamCur;
-                        break;
-                    case "002":
-                        document.getElementById("_video002").srcObject = mediaStreamCur;
-                        break;
-                    case "003":
-                        document.getElementById("_video003").srcObject = mediaStreamCur;
-                        break;
-                    case "004":
-                        document.getElementById("_video004").srcObject = mediaStreamCur;
-                        break;
-                    case "005":
-                        document.getElementById("_video005").srcObject = mediaStreamCur;
-                        break;
-                    case "006":
-                        document.getElementById("_video006").srcObject = mediaStreamCur;
-                        break;
-                    case "0000":
-                        document.getElementById("_video0000").srcObject = mediaStreamCur;
-                        break;
-                    default:
-                }
+
+                document.getElementById("_video"+myId).srcObject = mediaStreamCur;
                 let peers = sessionStorage.getItem('allpeers'+myId).split(",");
                 peers.forEach(elem => {
                     let peerIdComps = elem.split("-");
                     ////alert(peerIdComps[0]+","+peerIdComps[1]);
                     if(peer && ( sessionStorage.getItem('init'+myId) == 'true' || !connectedPeers.has(peerIdComps[1]))) {
-                        //alert('new conn to '+peerIdComps[1]);
                         let call = peer.call(peerIdComps[1], localStream);
                         call.on('stream', function(remoteStream){
                             document.getElementById("_video"+peerIdComps[0]).srcObject = remoteStream;
                             connectedPeers.add(peerIdComps[1]);
+                            mediaConns.push(call);
                         });
                     }
                 });
@@ -432,10 +454,11 @@
 
         $('#screenShareFlag').click(function() {
             shareScreen = !shareScreen;
+            let id = '0000Screen';
 
             if(shareScreen){
                 if(screenStreamCur){
-                    document.getElementById("_video"+myId).srcObject = screenStreamCur;
+                    document.getElementById("_video"+id).srcObject = screenStreamCur;
                 }else {
 
                     const constraints = {
@@ -445,23 +468,16 @@
 
                     navigator.mediaDevices.getDisplayMedia(constraints).then(function (mediaStream) {
                         screenStreamCur = mediaStream;
-                        document.getElementById("_video"+myId).srcObject = screenStreamCur;
-                        peer.disconnect();
-
-
-                        var peer = new Peer({
-                            config: {'iceServers': [
-                                    { url: 'stun:stun.l.google.com:19302' }
-
-                                ]} /* Sample servers, please use appropriate ones */
-                        });
-                        let peers = sessionStorage.getItem('allpeers'+myId).split(",");
+                        document.getElementById("_video"+id).srcObject = mediaStream;
+                        let peers = sessionStorage.getItem('allpeersscreen'+myId).split(",");
                         peers.forEach(elem => {
                             let peerIdComps = elem.split("-");
-                            if(peer) {
-                                let call = peer.call(peerIdComps[1], screenStreamCur);
+                            if(peerScreen) {
+                                let call = peerScreen.call(peerIdComps[1], mediaStream);
                                 call.on('stream', function(remoteStream){
-                                    document.getElementById("_video"+peerIdComps[0]).srcObject = remoteStream;
+                                    if(myId !== '0000') {
+                                        document.getElementById("_video" + id).srcObject = remoteStream;
+                                    }
 
                                 });
                             }
@@ -473,7 +489,7 @@
                 }
 
             }else {
-                document.getElementById("_video"+myId).srcObject = mediaStreamCur;
+                document.getElementById("_video"+id).srcObject = screenStreamCur;
             }
 
 

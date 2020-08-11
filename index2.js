@@ -154,6 +154,29 @@ if (!sticky.listen(server, serverPort)) {
 
         });
 
+        socket.on('peerinfoscreen', function (msg){
+            console.log(" ----  >>>>>>>>>>>>>>>>>>>>> "+(!global.allPeers));
+            if(global.allPeersScreen){
+                let gconnsScreen = global.allPeersScreen.split(",");
+                let x = "|";
+                for (let i = 0; i < gconnsScreen.length ; i++) {
+                    if(gconnsScreen[i].split("-")[0] !== msg.split("-")[0]){
+                        x = x + ","+gconnsScreen[i];
+                    }
+                }
+                global.allPeersScreen = x + "," + msg;
+                global.allPeersScreen = global.allPeersScreen.replace("|,","");
+            }else {
+                global.allPeersScreen = global.allPeersScreen + "," + msg;
+                global.allPeersScreen = global.allPeersScreen.replace("undefined,", "");
+                console.log("   1st > " +global.allPeersScreen);
+
+            }
+            console.log(global.allPeersScreen);
+            io.emit('newpeerscreen', global.allPeersScreen);
+
+        });
+
         socket.on('alloff', function (msg) {
             io.emit('pausevideo', msg);
         });
