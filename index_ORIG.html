@@ -12,6 +12,18 @@
             box-sizing: border-box;
         }
 
+        @media screen and (min-width: 320px) and (max-width: 767px) and (orientation: landscape) {
+            html {
+                transform: rotate(-90deg);
+                transform-origin: left top;
+                width: 100vh;
+                overflow-x: hidden;
+                position: absolute;
+                top: 100%;
+                left: 0;
+            }
+        }
+
         body {
             font: 13px Helvetica, Arial;
         }
@@ -116,8 +128,8 @@
     <input id="m" autocomplete="off"/>
     <button>Send</button>
 </form>
-<div class="container">
-    <div class="item">
+<div id ="cid" class="container">
+  <!--  <div class="item">
         <video controls="" id="_video123" autoplay="autoplay" width="120px" height="70" ></video>
         <span class="caption" id="123"></span>
     </div>
@@ -156,7 +168,7 @@
     <div class="item">
         <video controls="" id="_video006" autoplay="autoplay" width="120px" height="70" ></video>
         <span class="caption" id="006"></span>
-    </div>
+    </div>-->
 </div>
 <div class="container1">
     <div class="item">
@@ -264,11 +276,42 @@
         });
 
         socket.on('connstr', function (msg) {
+          if(sessionStorage.getItem('loadedPage'+myId) === 'done'){
+              return ;
+          }
+
           let comps = msg.split(';');
            comps.forEach(element => {
-               document.getElementById(element.split('=')[0]).textContent = element.split('=')[1];
-               users.set(element.split('=')[0], element.split('=')[1]);
+               let curId = element.split('=')[0];
+               const curText = element.split('=')[1];
+
+               if(!curId.startsWith("0000")) {
+                   let c = document.getElementById("cid");
+
+                   let div = document.createElement('div');
+                   div.className = 'item';
+
+                   let v = document.createElement("video");
+                   v.id = "_video" + curId;
+                   v.controls = true;
+                   v.height = 80;
+                   v.width = 120;
+                   v.autoplay = true;
+
+                   let span = document.createElement("span");
+                   span.className = "caption";
+                   span.id = curId;
+                   span.textContent = curText
+
+                   div.appendChild(v);
+                   div.appendChild(span);
+                   c.appendChild(div);
+               }
+
+               document.getElementById(curId).textContent = curText;
+               users.set(curId, curText);
            });
+           sessionStorage.setItem('loadedPage'+myId, 'done');
 
         });
         var peer = new Peer({
