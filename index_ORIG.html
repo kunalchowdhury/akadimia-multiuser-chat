@@ -118,55 +118,55 @@
 </form>
 <div class="container">
     <div class="item">
-        <video controls="" id="_video123" autoplay="autoplay" preload="none"  width="120px" ></video>
+        <video controls="" id="_video123" autoplay="autoplay" width="120px" height="70" ></video>
         <span class="caption" id="123"></span>
     </div>
     <div class="item">
-        <video controls="" id="_video345" autoplay="autoplay" width="120px" ></video>
+        <video controls="" id="_video345" autoplay="autoplay" width="120px" height="70" ></video>
         <span class="caption" id="345"></span>
     </div>
     <div class="item">
-        <video controls="" id="_video567" autoplay="autoplay" width="120px" ></video>
+        <video controls="" id="_video567" autoplay="autoplay" width="120px" height="70" ></video>
         <span class="caption" id="567"></span>
     </div>
     <div class="item">
-        <video controls="" id="_video789" autoplay="autoplay" width="120px" ></video>
+        <video controls="" id="_video789" autoplay="autoplay" width="120px" height="70" ></video>
         <span class="caption" id="789"></span>
     </div>
     <div class="item">
-        <video controls="" id="_video001" autoplay="autoplay" preload="none" width="120px" ></video>
+        <video controls="" id="_video001" autoplay="autoplay" width="120px" height="70" ></video>
         <span class="caption" id="001"></span>
     </div>
     <div class="item">
-        <video controls="" id="_video002" autoplay="autoplay" width="120px" ></video>
+        <video controls="" id="_video002" autoplay="autoplay" width="120px" height="70" ></video>
         <span class="caption" id="002"></span>
     </div>
     <div class="item">
-        <video controls="" id="_video003" autoplay="autoplay" width="120px" ></video>
+        <video controls="" id="_video003" autoplay="autoplay" width="120px" height="70" ></video>
         <span class="caption" id="003"></span>
     </div>
     <div class="item">
-        <video controls="" id="_video004" autoplay="autoplay" width="120px" ></video>
+        <video controls="" id="_video004" autoplay="autoplay" width="120px" height="70" ></video>
         <span class="caption" id="004"></span>
     </div>
     <div class="item">
-        <video controls="" id="_video005" autoplay="autoplay" width="120px" ></video>
+        <video controls="" id="_video005" autoplay="autoplay" width="120px" height="70" ></video>
         <span class="caption" id="005"></span>
     </div>
     <div class="item">
-        <video controls="" id="_video006" autoplay="autoplay" width="120px" ></video>
+        <video controls="" id="_video006" autoplay="autoplay" width="120px" height="70" ></video>
         <span class="caption" id="006"></span>
     </div>
 </div>
 <div class="container1">
-    <video controls="" id="_video0000" autoplay="autoplay" height="250px" width="380px"></video>
+    <video controls="" id="_video0000" autoplay="autoplay" height="200px" width="400px"></video>
     <span class="caption1" id="0000" ></span>
     <br>
     <br>
 
-    <button style="font-size:24px;margin-left: 110px" id="videoFlag" ><i class="fa fa-video-camera" style="font-size:30px;color:blue"></i> </button>
+    <button style="font-size:24px;margin-left: 120px" id="videoFlag" ><i class="fa fa-video-camera" style="font-size:30px;color:blue"></i> </button>
     <button style="font-size:24px;margin-left: 30px" id="audioFlag" ><i class="fa fa-phone" style="font-size:30px;color:blue"></i></button>
-    <button style="font-size:24px;margin-left: 30px" id="screemShareFlag" ><i class="fa fa-share" style="font-size:30px;color:blue"></i></button>
+    <button style="font-size:24px;margin-left: 30px" id="screenShareFlag" ><i class="fa fa-share" style="font-size:30px;color:blue"></i></button>
 
 </div>
 <div class="container2">
@@ -179,6 +179,20 @@
 <script>
 
     $(function () {
+        let video = true;
+        let audio = true;
+        let shareScreen = false;
+        let mediaRecorder ;
+        let timer ;
+        let mediaStreamCur ;
+        let screenStreamCur ;
+
+        const constraints = {
+            audio: audio ? {echoCancellation: true} : false,
+            video: video ? {width: 400, height: 200} :false
+        };
+
+
         //const socket = io('https://192.168.1.3:5000?user=abc');
         const socket = io('https://192.168.1.3:3050?' + window.location.search.substr(1));
         let users = new Map();
@@ -218,6 +232,10 @@
             });
         });
 
+        navigator.mediaDevices.getUserMedia(constraints).then(function (mediaStream) {
+            mediaStreamCur = mediaStream;
+            localStream = mediaStream;
+        });
 
         let myId = '';
         $('form').submit(function () {
@@ -250,6 +268,8 @@
 
                 ]} /* Sample servers, please use appropriate ones */
         });
+
+
         socket.on('whoami', function (msg) {
             myId = msg.toString();
             peer.on('open', function(id) {
@@ -259,32 +279,31 @@
                     sessionStorage.setItem('open'+myId, 'sent');
                 }
             });
+            const constraints = {
+                audio: audio ? {echoCancellation: true} : false,
+                video: video ? {width: 400, height: 200} :false
+            };
+
             peer.on('call', function (call){
-                const constraints = {
-                    audio: {echoCancellation: true},
-                    video: {width: 400, height: 200}
-                };
-                navigator.mediaDevices.getUserMedia(constraints).then(function (mediaStream) {
-                   call.answer(mediaStream);
-                });
+
+              //  navigator.mediaDevices.getUserMedia(constraints).then(function (mediaStream) {
+                   call.answer(shareScreen ? screenStreamCur : mediaStreamCur);
+               // });
             });
 
         })
-        let mediaStreamCur ;
+
         socket.on('newpeer', function (msg){
             sessionStorage.setItem('allpeers'+myId, msg);
             if(sessionStorage.getItem('init'+myId) == 'true'){
-                const constraints = {
-                    audio: audio ? {echoCancellation: true} : false,
-                    video: video ? {width: 400, height: 200} :false
-                };
+
               //  navigator.mediaDevices.getUserMedia(constraints).then(function (mediaStream) {
                     let peers = sessionStorage.getItem('allpeers'+myId).split(",");
                     peers.forEach(elem => {
                         let peerIdComps = elem.split("-");
                         ////alert(peerIdComps[0]+","+peerIdComps[1]);
                         if (peer && !connectedPeers.has(peerIdComps[0])) {
-                            let call = peer.call(peerIdComps[1], mediaStreamCur);
+                            let call = peer.call(peerIdComps[1], (shareScreen) ? screenStreamCur : mediaStreamCur);
                             call.on('stream', function (remoteStream) {
                                 localStream = remoteStream;
                                 document.getElementById("_video" + peerIdComps[0]).srcObject = remoteStream;
@@ -313,56 +332,43 @@
             audioCodecMap.set(msg, 'audio/ogg; codecs=opus');
         });
 
-        let video = false;
-        let audio = true;
-        let shareScreen = false;
-        let mediaRecorder ;
-        let timer ;
-
         let connectedPeers = new Set();
 
-        function mediaDeviceCall(peer) {
-            const constraints = {
-                audio: audio ? {echoCancellation: true} : false,
-                video: video ? {width: 400, height: 200} :false
-            };
 
-            navigator.mediaDevices.getUserMedia(constraints).then(function (mediaStream) {
-                mediaStreamCur = mediaStream;
-                localStream = mediaStream;
-                switch (myId) {
+        function mediaDeviceCall(peer) {
+           switch (myId) {
                     case "123":
-                        document.getElementById("_video123").srcObject = mediaStream;
+                        document.getElementById("_video123").srcObject = mediaStreamCur;
                         break;
                     case "345":
-                        document.getElementById("_video345").srcObject = mediaStream;
+                        document.getElementById("_video345").srcObject = mediaStreamCur;
                         break;
                     case "567":
-                        document.getElementById("_video567").srcObject = mediaStream;
+                        document.getElementById("_video567").srcObject = mediaStreamCur;
                         break;
                     case "789":
-                        document.getElementById("_video789").srcObject = mediaStream;
+                        document.getElementById("_video789").srcObject = mediaStreamCur;
                         break;
                     case "001":
-                        document.getElementById("_video001").srcObject = mediaStream;
+                        document.getElementById("_video001").srcObject = mediaStreamCur;
                         break;
                     case "002":
-                        document.getElementById("_video002").srcObject = mediaStream;
+                        document.getElementById("_video002").srcObject = mediaStreamCur;
                         break;
                     case "003":
-                        document.getElementById("_video003").srcObject = mediaStream;
+                        document.getElementById("_video003").srcObject = mediaStreamCur;
                         break;
                     case "004":
-                        document.getElementById("_video004").srcObject = mediaStream;
+                        document.getElementById("_video004").srcObject = mediaStreamCur;
                         break;
                     case "005":
-                        document.getElementById("_video005").srcObject = mediaStream;
+                        document.getElementById("_video005").srcObject = mediaStreamCur;
                         break;
                     case "006":
-                        document.getElementById("_video006").srcObject = mediaStream;
+                        document.getElementById("_video006").srcObject = mediaStreamCur;
                         break;
                     case "0000":
-                        document.getElementById("_video0000").srcObject = mediaStream;
+                        document.getElementById("_video0000").srcObject = mediaStreamCur;
                         break;
                     default:
                 }
@@ -381,9 +387,9 @@
                 });
 
                 sessionStorage.setItem('init'+myId, 'true');
-
-            });
         }
+
+
 
         $('#videoFlag').click(function() {
             video = ! video;
@@ -392,12 +398,12 @@
                         localStream.getVideoTracks().forEach(function (track) {
                             track.enabled = false;
                         });
-                        socket.emit('mutevid', myId);
+                      //  socket.emit('mutevid', myId);
                     }else {
                         localStream.getVideoTracks().forEach(function (track) {
                             track.enabled = true;
                         });
-                        socket.emit('onvid', myId);
+                     //   socket.emit('onvid', myId);
                     }
                 }else {
                     mediaDeviceCall(peer);
@@ -411,12 +417,12 @@
                         localStream.getAudioTracks().forEach(function (track) {
                             track.enabled = false;
                         });
-                        socket.emit('muteaud', myId);
+                     //   socket.emit('muteaud', myId);
                     }else {
                         localStream.getAudioTracks().forEach(function (track) {
                             track.enabled = true;
                         });
-                        socket.emit('onaud', myId);
+                    //    socket.emit('onaud', myId);
                     }
 
                 }else {
@@ -424,6 +430,54 @@
                 }
       });
 
+        $('#screenShareFlag').click(function() {
+            shareScreen = !shareScreen;
+
+            if(shareScreen){
+                if(screenStreamCur){
+                    document.getElementById("_video"+myId).srcObject = screenStreamCur;
+                }else {
+
+                    const constraints = {
+                        audio: {echoCancellation: true},
+                        video: true
+                    };
+
+                    navigator.mediaDevices.getDisplayMedia(constraints).then(function (mediaStream) {
+                        screenStreamCur = mediaStream;
+                        document.getElementById("_video"+myId).srcObject = screenStreamCur;
+                        peer.disconnect();
+
+
+                        var peer = new Peer({
+                            config: {'iceServers': [
+                                    { url: 'stun:stun.l.google.com:19302' }
+
+                                ]} /* Sample servers, please use appropriate ones */
+                        });
+                        let peers = sessionStorage.getItem('allpeers'+myId).split(",");
+                        peers.forEach(elem => {
+                            let peerIdComps = elem.split("-");
+                            if(peer) {
+                                let call = peer.call(peerIdComps[1], screenStreamCur);
+                                call.on('stream', function(remoteStream){
+                                    document.getElementById("_video"+peerIdComps[0]).srcObject = remoteStream;
+
+                                });
+                            }
+                        });
+                    });
+
+
+
+                }
+
+            }else {
+                document.getElementById("_video"+myId).srcObject = mediaStreamCur;
+            }
+
+
+        });
 
     });
 </script>
