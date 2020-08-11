@@ -34,7 +34,7 @@ var io = require('socket.io')(server);
 //io.adapter(redis(redisConfig));
 
 app.get('/', function(req, res) {
-    res.sendFile(__dirname + '/index.html');
+    res.sendFile(__dirname + '/index_ORIG.html');
     console.log('res - '+res.worker)
 });
 

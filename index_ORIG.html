@@ -1,0 +1,431 @@
+<!doctype html>
+<html>
+<head>
+    <title>Akadimia Conference</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font: 13px Helvetica, Arial;
+        }
+
+        form {
+            background: #000;
+            padding: 3px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+        form input {
+            border: 0;
+            padding: 10px;
+            width: 90%;
+            margin-right: .5%;
+        }
+
+        form button {
+            width: 9%;
+            background: rgb(130, 224, 255);
+            border: none;
+            padding: 10px;
+        }
+
+        #messages {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        #messages li {
+            padding: 5px 10px;
+        }
+
+        #messages li:nth-child(odd) {
+            background: #eee;
+        }
+
+        #messages {
+            margin-bottom: 40px
+        }
+
+        div.container {
+            width: 1300px;
+            margin-top: 20px;
+            margin-left: 30px;
+        }
+
+        div.container1 {
+            width: 800px;
+            margin-left: 400px;
+            margin-top: 80px;
+        }
+
+        div.container2 {
+            width: 200px;
+            height: 380px;
+            margin-left: 1100px;
+            overflow: scroll;
+            position: absolute;
+            top: 160px;
+            background-color: #cec7c5;
+
+        }
+
+        div.item {
+            vertical-align: top;
+            display: inline-block;
+            text-align: center;
+            margin-left: 1px;
+            margin-right: 1px;
+        }
+
+        img {
+            width: 100px;
+            height: 100px;
+            background-color: grey;
+        }
+
+        .caption {
+            display: block;
+            block-size: 1px;
+            font-size: 10px;
+            font-family: sans-serif;
+
+        }
+        .caption1 {
+            display: block;
+            block-size: 1px;
+            font-size: 12px;
+            margin-left: 140px;
+            font-family: "Open Sans Semibold",serif;
+
+        }
+    </style>
+
+</head>
+<body>
+<form action="">
+    <input id="m" autocomplete="off"/>
+    <button>Send</button>
+</form>
+<div class="container">
+    <div class="item">
+        <video controls="" id="_video123" autoplay="autoplay" preload="none"  width="120px" ></video>
+        <span class="caption" id="123"></span>
+    </div>
+    <div class="item">
+        <video controls="" id="_video345" autoplay="autoplay" width="120px" ></video>
+        <span class="caption" id="345"></span>
+    </div>
+    <div class="item">
+        <video controls="" id="_video567" autoplay="autoplay" width="120px" ></video>
+        <span class="caption" id="567"></span>
+    </div>
+    <div class="item">
+        <video controls="" id="_video789" autoplay="autoplay" width="120px" ></video>
+        <span class="caption" id="789"></span>
+    </div>
+    <div class="item">
+        <video controls="" id="_video001" autoplay="autoplay" preload="none" width="120px" ></video>
+        <span class="caption" id="001"></span>
+    </div>
+    <div class="item">
+        <video controls="" id="_video002" autoplay="autoplay" width="120px" ></video>
+        <span class="caption" id="002"></span>
+    </div>
+    <div class="item">
+        <video controls="" id="_video003" autoplay="autoplay" width="120px" ></video>
+        <span class="caption" id="003"></span>
+    </div>
+    <div class="item">
+        <video controls="" id="_video004" autoplay="autoplay" width="120px" ></video>
+        <span class="caption" id="004"></span>
+    </div>
+    <div class="item">
+        <video controls="" id="_video005" autoplay="autoplay" width="120px" ></video>
+        <span class="caption" id="005"></span>
+    </div>
+    <div class="item">
+        <video controls="" id="_video006" autoplay="autoplay" width="120px" ></video>
+        <span class="caption" id="006"></span>
+    </div>
+</div>
+<div class="container1">
+    <video controls="" id="_video0000" autoplay="autoplay" height="250px" width="380px"></video>
+    <span class="caption1" id="0000" ></span>
+    <br>
+    <br>
+
+    <button style="font-size:24px;margin-left: 110px" id="videoFlag" ><i class="fa fa-video-camera" style="font-size:30px;color:blue"></i> </button>
+    <button style="font-size:24px;margin-left: 30px" id="audioFlag" ><i class="fa fa-phone" style="font-size:30px;color:blue"></i></button>
+    <button style="font-size:24px;margin-left: 30px" id="screemShareFlag" ><i class="fa fa-share" style="font-size:30px;color:blue"></i></button>
+
+</div>
+<div class="container2">
+    <ul id="messages"></ul>
+</div>
+<script src="/socket.io/socket.io.js"></script>
+<script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+<script src="https://unpkg.com/peerjs@1.3.1/dist/peerjs.min.js"></script>
+
+<script>
+
+    $(function () {
+        //const socket = io('https://192.168.1.3:5000?user=abc');
+        const socket = io('https://192.168.1.3:3050?' + window.location.search.substr(1));
+        let users = new Map();
+        let audioCodecMap = new Map();
+        socket.emit('sendconnstr','');
+
+        let vTrackId ;
+        socket.on('v001', function (msg){
+            vTrackId = msg;
+        });
+
+        socket.on('voff', function (msg){
+            var vid = document.getElementById("_video"+msg);
+            vid.srcObject.getVideoTracks().forEach(function (track) {
+                track.enabled = false;
+            });
+        });
+
+        socket.on('von', function (msg){
+            var vid = document.getElementById("_video"+msg);
+            vid.srcObject.getVideoTracks().forEach(function (track) {
+                track.enabled = true;
+            });
+        });
+
+        socket.on('aoff', function (msg){
+            var vid = document.getElementById("_video"+msg);
+            vid.srcObject.getAudioTracks().forEach(function (track) {
+                track.enabled = false;
+            });
+        });
+
+        socket.on('aon', function (msg){
+            var vid = document.getElementById("_video"+msg);
+            vid.srcObject.getAudioTracks().forEach(function (track) {
+                track.enabled = true;
+            });
+        });
+
+
+        let myId = '';
+        $('form').submit(function () {
+            socket.emit('chat message', $('#m').val());
+            $('#m').val('');
+            return false;
+        });
+        socket.on('chat message', function (msg) {
+            var txt1 = $("<b></b>").text(users.get(String(msg.split('>')[0]).trim())+":") ;
+            var txt2 = $("<p></p>").text(msg.split('>')[1]) ;
+            var txt3 = $("<li></li>").append(txt1, txt2);
+
+            $('#messages').append(txt3);
+            let element = document.getElementById("messages");
+            element.scrollTop = element.scrollHeight;
+          //  window.scrollTo(0, document.body.scrollHeight);
+        });
+
+        socket.on('connstr', function (msg) {
+          let comps = msg.split(';');
+           comps.forEach(element => {
+               document.getElementById(element.split('=')[0]).textContent = element.split('=')[1];
+               users.set(element.split('=')[0], element.split('=')[1]);
+           });
+
+        });
+        var peer = new Peer({
+            config: {'iceServers': [
+                    { url: 'stun:stun.l.google.com:19302' }
+
+                ]} /* Sample servers, please use appropriate ones */
+        });
+        socket.on('whoami', function (msg) {
+            myId = msg.toString();
+            peer.on('open', function(id) {
+                let val = sessionStorage.getItem('open'+myId);
+                if(val !== 'sent') {
+                    socket.emit('peerinfo', myId + "-" + id);
+                    sessionStorage.setItem('open'+myId, 'sent');
+                }
+            });
+            peer.on('call', function (call){
+                const constraints = {
+                    audio: {echoCancellation: true},
+                    video: {width: 400, height: 200}
+                };
+                navigator.mediaDevices.getUserMedia(constraints).then(function (mediaStream) {
+                   call.answer(mediaStream);
+                });
+            });
+
+        })
+        let mediaStreamCur ;
+        socket.on('newpeer', function (msg){
+            sessionStorage.setItem('allpeers'+myId, msg);
+            if(sessionStorage.getItem('init'+myId) == 'true'){
+                const constraints = {
+                    audio: audio ? {echoCancellation: true} : false,
+                    video: video ? {width: 400, height: 200} :false
+                };
+              //  navigator.mediaDevices.getUserMedia(constraints).then(function (mediaStream) {
+                    let peers = sessionStorage.getItem('allpeers'+myId).split(",");
+                    peers.forEach(elem => {
+                        let peerIdComps = elem.split("-");
+                        ////alert(peerIdComps[0]+","+peerIdComps[1]);
+                        if (peer && !connectedPeers.has(peerIdComps[0])) {
+                            let call = peer.call(peerIdComps[1], mediaStreamCur);
+                            call.on('stream', function (remoteStream) {
+                                localStream = remoteStream;
+                                document.getElementById("_video" + peerIdComps[0]).srcObject = remoteStream;
+                                connectedPeers.add(peerIdComps[0]);
+                            });
+                        }
+                    });
+               // });
+            }
+
+        });
+
+
+        socket.on('pausevideo', function (msg) {
+            let v1 = document.getElementById("_video"+msg);
+            v1.pause();
+            v1.currentTime = 0;
+        });
+
+        socket.on('playvideo', function (msg) {
+            let v1 = document.getElementById("_video"+msg);
+            audioCodecMap.delete(msg);
+        });
+
+        socket.on('audiocodec', function (msg) {
+            audioCodecMap.set(msg, 'audio/ogg; codecs=opus');
+        });
+
+        let video = false;
+        let audio = true;
+        let shareScreen = false;
+        let mediaRecorder ;
+        let timer ;
+
+        let connectedPeers = new Set();
+
+        function mediaDeviceCall(peer) {
+            const constraints = {
+                audio: audio ? {echoCancellation: true} : false,
+                video: video ? {width: 400, height: 200} :false
+            };
+
+            navigator.mediaDevices.getUserMedia(constraints).then(function (mediaStream) {
+                mediaStreamCur = mediaStream;
+                localStream = mediaStream;
+                switch (myId) {
+                    case "123":
+                        document.getElementById("_video123").srcObject = mediaStream;
+                        break;
+                    case "345":
+                        document.getElementById("_video345").srcObject = mediaStream;
+                        break;
+                    case "567":
+                        document.getElementById("_video567").srcObject = mediaStream;
+                        break;
+                    case "789":
+                        document.getElementById("_video789").srcObject = mediaStream;
+                        break;
+                    case "001":
+                        document.getElementById("_video001").srcObject = mediaStream;
+                        break;
+                    case "002":
+                        document.getElementById("_video002").srcObject = mediaStream;
+                        break;
+                    case "003":
+                        document.getElementById("_video003").srcObject = mediaStream;
+                        break;
+                    case "004":
+                        document.getElementById("_video004").srcObject = mediaStream;
+                        break;
+                    case "005":
+                        document.getElementById("_video005").srcObject = mediaStream;
+                        break;
+                    case "006":
+                        document.getElementById("_video006").srcObject = mediaStream;
+                        break;
+                    case "0000":
+                        document.getElementById("_video0000").srcObject = mediaStream;
+                        break;
+                    default:
+                }
+                let peers = sessionStorage.getItem('allpeers'+myId).split(",");
+                peers.forEach(elem => {
+                    let peerIdComps = elem.split("-");
+                    ////alert(peerIdComps[0]+","+peerIdComps[1]);
+                    if(peer && ( sessionStorage.getItem('init'+myId) == 'true' || !connectedPeers.has(peerIdComps[1]))) {
+                        //alert('new conn to '+peerIdComps[1]);
+                        let call = peer.call(peerIdComps[1], localStream);
+                        call.on('stream', function(remoteStream){
+                            document.getElementById("_video"+peerIdComps[0]).srcObject = remoteStream;
+                            connectedPeers.add(peerIdComps[1]);
+                        });
+                    }
+                });
+
+                sessionStorage.setItem('init'+myId, 'true');
+
+            });
+        }
+
+        $('#videoFlag').click(function() {
+            video = ! video;
+               if(sessionStorage.getItem('init'+myId) == 'true') {
+                    if (!video) {
+                        localStream.getVideoTracks().forEach(function (track) {
+                            track.enabled = false;
+                        });
+                        socket.emit('mutevid', myId);
+                    }else {
+                        localStream.getVideoTracks().forEach(function (track) {
+                            track.enabled = true;
+                        });
+                        socket.emit('onvid', myId);
+                    }
+                }else {
+                    mediaDeviceCall(peer);
+                }
+        });
+
+        $('#audioFlag').click(function() {
+            audio = ! audio;
+            if(sessionStorage.getItem('init'+myId) == 'true') {
+                    if(!audio){
+                        localStream.getAudioTracks().forEach(function (track) {
+                            track.enabled = false;
+                        });
+                        socket.emit('muteaud', myId);
+                    }else {
+                        localStream.getAudioTracks().forEach(function (track) {
+                            track.enabled = true;
+                        });
+                        socket.emit('onaud', myId);
+                    }
+
+                }else {
+                    mediaDeviceCall(peer);
+                }
+      });
+
+
+    });
+</script>
+</body>
+</html>

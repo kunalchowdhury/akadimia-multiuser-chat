@@ -95,7 +95,7 @@ app.get('/', function(req, res) {
 // Request headers you wish to allow
     res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
 
-    res.sendFile(__dirname + '/index.html');
+    res.sendFile(__dirname + '/index_ORIG.html');
     console.log('res - '+res.worker)
 });
 
@@ -131,6 +131,28 @@ if (!sticky.listen(server, serverPort)) {
 
             io.emit('chat message', user + ' > ' + msg);
         });
+        socket.on('peerinfo', function (msg){
+            console.log(" ----  >>>>>>>>>>>>>>>>>>>>> "+(!global.allPeers));
+            if(global.allPeers){
+                let gconns = global.allPeers.split(",");
+                let x = "|";
+                for (let i = 0; i < gconns.length ; i++) {
+                    if(gconns[i].split("-")[0] !== msg.split("-")[0]){
+                        x = x + ","+gconns[i];
+                    }
+                }
+                global.allPeers = x + "," + msg;
+                global.allPeers = global.allPeers.replace("|,","");
+            }else {
+                global.allPeers = global.allPeers + "," + msg;
+                global.allPeers = global.allPeers.replace("undefined,", "");
+                console.log("   1st " +global.allPeers);
+
+            }
+            console.log(global.allPeers);
+            io.emit('newpeer', global.allPeers);
+
+        });
 
         socket.on('alloff', function (msg) {
             io.emit('pausevideo', msg);
@@ -142,6 +164,28 @@ if (!sticky.listen(server, serverPort)) {
             io.emit('audiocodec', msg);
         });
 
+        socket.on('vid001', function (msg){
+            io.emit('v001', msg);
+        });
+
+        socket.on('mutevid', function (msg){
+            console.log('mutevid '+msg);
+            io.emit('voff', msg);
+        });
+
+        socket.on('onvid', function (msg){
+            io.emit('von', msg);
+        });
+
+        socket.on('muteaud', function (msg){
+            console.log('mutevid '+msg);
+            io.emit('aoff', msg);
+        });
+
+        socket.on('onaud', function (msg){
+            io.emit('aon', msg);
+        });
+
         socket.join('voice' + user);
 
         if (user === '123') {
@@ -150,10 +194,11 @@ if (!sticky.listen(server, serverPort)) {
                 //  socket.broadcast.emit('voice123', blob);
                 //   io.emit('voice123', blob);
                 // console.log('emitting to voice001');
-                io.to('voice345').to('voice567').to('voice789')
+               /* io.to('voice345').to('voice567').to('voice789')
                     .to('voice001').to('voice002').to('voice003')
                     .to('voice004').to('voice005').to('voice006')
-                    .to('voice0000').emit('voice123', blob);
+                    .to('voice0000').emit('voice123', blob);*/
+                io.to('voice001').emit('voice123', blob);
             });
         }
 
@@ -202,10 +247,12 @@ if (!sticky.listen(server, serverPort)) {
                 // io.emit('voice001', blob);
                 //  console.log('emitting to voice123');
                 // io.to('voice123').emit('voice001', blob);
-                io.to('voice123').to('voice345').to('voice567')
+              /*  io.to('voice123').to('voice345').to('voice567')
                     .to('voice789').to('voice002').to('voice003')
                     .to('voice004').to('voice005').to('voice006')
-                    .to('voice0000').emit('voice001', blob);
+                    .to('voice0000').emit('voice001', blob);*/
+
+                  io.to('voice123').emit('voice001', blob);
             });
         }
 
