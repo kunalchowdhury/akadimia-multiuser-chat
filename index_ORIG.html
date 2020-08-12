@@ -12,6 +12,16 @@
             box-sizing: border-box;
         }
 
+        .header {
+            width: 1400px;
+            background-color: #5f88ff;
+            display: block;
+            margin-top: 0;
+            font-family: "Courier 10 Pitch";
+            font-size: medium;
+        }
+
+
         @media screen and (min-width: 320px) and (max-width: 767px) and (orientation: landscape) {
             html {
                 transform: rotate(-90deg);
@@ -71,23 +81,25 @@
         div.container {
             width: 1300px;
             margin-top: 20px;
-            margin-left: 20px;
+
         }
 
         div.container1 {
             width: 900px;
             margin-left: 200px;
-            margin-top: 80px;
+            margin-top: 50px;
         }
 
         div.container2 {
             width: 200px;
-            height: 380px;
+            height: 330px;
             margin-left: 1100px;
             overflow: scroll;
             position: absolute;
-            top: 160px;
-            background-color: #cec7c5;
+            top: 200px;
+            background-color: #e8d783;
+            font-family: "Courier 10 Pitch";
+
 
         }
 
@@ -128,48 +140,14 @@
     <input id="m" autocomplete="off"/>
     <button>Send</button>
 </form>
-<div id ="cid" class="container">
-  <!--  <div class="item">
-        <video controls="" id="_video123" autoplay="autoplay" width="120px" height="70" ></video>
-        <span class="caption" id="123"></span>
-    </div>
-    <div class="item">
-        <video controls="" id="_video345" autoplay="autoplay" width="120px" height="70" ></video>
-        <span class="caption" id="345"></span>
-    </div>
-    <div class="item">
-        <video controls="" id="_video567" autoplay="autoplay" width="120px" height="70" ></video>
-        <span class="caption" id="567"></span>
-    </div>
-    <div class="item">
-        <video controls="" id="_video789" autoplay="autoplay" width="120px" height="70" ></video>
-        <span class="caption" id="789"></span>
-    </div>
-    <div class="item">
-        <video controls="" id="_video001" autoplay="autoplay" width="120px" height="70" ></video>
-        <span class="caption" id="001"></span>
-    </div>
-    <div class="item">
-        <video controls="" id="_video002" autoplay="autoplay" width="120px" height="70" ></video>
-        <span class="caption" id="002"></span>
-    </div>
-    <div class="item">
-        <video controls="" id="_video003" autoplay="autoplay" width="120px" height="70" ></video>
-        <span class="caption" id="003"></span>
-    </div>
-    <div class="item">
-        <video controls="" id="_video004" autoplay="autoplay" width="120px" height="70" ></video>
-        <span class="caption" id="004"></span>
-    </div>
-    <div class="item">
-        <video controls="" id="_video005" autoplay="autoplay" width="120px" height="70" ></video>
-        <span class="caption" id="005"></span>
-    </div>
-    <div class="item">
-        <video controls="" id="_video006" autoplay="autoplay" width="120px" height="70" ></video>
-        <span class="caption" id="006"></span>
-    </div>-->
+<div class="header">
+    <h2 style="font-family: 'Courier 10 Pitch';margin-left: 480px">Session Host <i>Ireena Dutta</i></h2>
+    <br>
+    <h3 style="font-family: 'Courier 10 Pitch';margin-left: 550px">Story Telling</i></h3>
+
+
 </div>
+<div id ="cid" class="container"></div>
 <div class="container1">
     <div class="item">
         <video controls="" id="_video0000" autoplay="autoplay" width="400px" height="200"  ></video>
@@ -186,10 +164,14 @@
 
     <button style="font-size:24px;margin-left: 320px" id="videoFlag" ><i class="fa fa-video-camera" style="font-size:30px;color:blue"></i> </button>
     <button style="font-size:24px;margin-left: 30px" id="audioFlag" ><i class="fa fa-phone" style="font-size:30px;color:blue"></i></button>
-    <button style="font-size:24px;margin-left: 30px" id="screenShareFlag" ><i class="fa fa-share" style="font-size:30px;color:blue"></i></button>
-
+    <button style="font-size:24px;margin-left: 30px;display: none" id="screenShareFlag" ><i class="fa fa-share" style="font-size:30px;color:blue"></i></button>
 </div>
+<br><br>
+<h4>
+    <i style="font-size:12px;margin-left: 2px" class="fa">&#xf1f9;</i> akadimia-connect
+</h4>
 <div class="container2">
+    <h4 style="text-align: center;font-family: 'Courier 10 Pitch';background-color: #cec7c5">Chat Console</h4>
     <ul id="messages"></ul>
 </div>
 <script src="/socket.io/socket.io.js"></script>
@@ -212,9 +194,6 @@
             audio: audio ? {echoCancellation: true} : false,
             video: video ? {width: 400, height: 200} :false
         };
-
-
-        //const socket = io('https://192.168.1.3:5000?user=abc');
         const socket = io('https://192.168.1.3:3050?' + window.location.search.substr(1));
         let users = new Map();
         let audioCodecMap = new Map();
@@ -280,13 +259,19 @@
               return ;
           }
 
-          let comps = msg.split(';');
+
+           let comps = msg.split(';');
            comps.forEach(element => {
                let curId = element.split('=')[0];
                const curText = element.split('=')[1];
 
+               let c = document.getElementById("cid");
+
+               let len = (1300-(120*(comps.length-1) + (comps.length-2) + 2))/2 - (11-comps.length)*5;
+
+               c.style.marginLeft = len.toString()+"px";
+
                if(!curId.startsWith("0000")) {
-                   let c = document.getElementById("cid");
 
                    let div = document.createElement('div');
                    div.className = 'item';
@@ -331,6 +316,9 @@
 
         socket.on('whoami', function (msg) {
             myId = msg.toString();
+            if(myId === '0000'){
+                document.getElementById("screenShareFlag").style.display = "inline";
+            }
             peer.on('open', function(id) {
                 let val = sessionStorage.getItem('open'+myId);
                 if(val !== 'sent') {
@@ -353,18 +341,12 @@
             };
 
             peer.on('call', function (call){
-
-              //  navigator.mediaDevices.getUserMedia(constraints).then(function (mediaStream) {
                    call.answer(mediaStreamCur);
-               // });
             });
 
             peerScreen.on('call', function (call){
-                //alert(shareScreen +" "+ screenStreamCur +" " + mediaStreamCur);
                 call.answer(shareScreen ? screenStreamCur : mediaStreamCur);
                 call.on('stream', function (remoteStream) {
-                    //   call.answer(shareScreen ? screenStreamCur : mediaStreamCur);
-                   // alert('FROM INSIDE');
                     if(myId !== '0000') {
                         document.getElementById("_video0000Screen").srcObject = remoteStream;
                     }
@@ -381,8 +363,6 @@
         socket.on('newpeer', function (msg){
             sessionStorage.setItem('allpeers'+myId, msg);
             if(sessionStorage.getItem('init'+myId) == 'true'){
-
-              //  navigator.mediaDevices.getUserMedia(constraints).then(function (mediaStream) {
                     let peers = sessionStorage.getItem('allpeers'+myId).split(",");
                     peers.forEach(elem => {
                         let peerIdComps = elem.split("-");
@@ -397,20 +377,6 @@
                         }
                     });
 
-                   /* let peersScreen = sessionStorage.getItem('allpeersscreen'+myId).split(",");
-                    peersScreen.forEach(elem => {
-                        let peerIdComps = elem.split("-");
-                        if(peerIdComps[0] == '0000'){
-                            let call = peerScreen.call(peerIdComps[1], mediaStreamCur);
-                            call.on('stream', function (remoteStream) {
-                                document.getElementById("_video" + peerIdComps[0]).srcObject = remoteStream;
-                                //connectedPeers.add(peerIdComps[0]);
-                                //mediaConns.push(call);
-                            });
-                        }
-
-                    });*/
-               // });
             }
 
         });
@@ -440,7 +406,6 @@
                 let peers = sessionStorage.getItem('allpeers'+myId).split(",");
                 peers.forEach(elem => {
                     let peerIdComps = elem.split("-");
-                    ////alert(peerIdComps[0]+","+peerIdComps[1]);
                     if(peer && ( sessionStorage.getItem('init'+myId) == 'true' || !connectedPeers.has(peerIdComps[1]))) {
                         let call = peer.call(peerIdComps[1], localStream);
                         call.on('stream', function(remoteStream){
@@ -463,12 +428,10 @@
                         localStream.getVideoTracks().forEach(function (track) {
                             track.enabled = false;
                         });
-                      //  socket.emit('mutevid', myId);
                     }else {
                         localStream.getVideoTracks().forEach(function (track) {
                             track.enabled = true;
                         });
-                     //   socket.emit('onvid', myId);
                     }
                 }else {
                     mediaDeviceCall(peer);
@@ -482,12 +445,10 @@
                         localStream.getAudioTracks().forEach(function (track) {
                             track.enabled = false;
                         });
-                     //   socket.emit('muteaud', myId);
                     }else {
                         localStream.getAudioTracks().forEach(function (track) {
                             track.enabled = true;
                         });
-                    //    socket.emit('onaud', myId);
                     }
 
                 }else {
