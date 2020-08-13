@@ -162,7 +162,7 @@
     <br>
     <br>
 
-    <button style="font-size:24px;margin-left: 320px" id="videoFlag" ><i class="fa fa-video-camera" style="font-size:30px;color:blue"></i> </button>
+    <button style="font-size:24px;margin-left: 320px" id="videoFlag"  ><i class="fa fa-video-camera" style="font-size:30px;color:blue"></i> </button>
     <button style="font-size:24px;margin-left: 30px" id="audioFlag" ><i class="fa fa-phone" style="font-size:30px;color:blue"></i></button>
     <button style="font-size:24px;margin-left: 30px;display: none" id="screenShareFlag" ><i class="fa fa-share" style="font-size:30px;color:blue"></i></button>
 </div>
@@ -245,20 +245,34 @@
         });
         socket.on('chat message', function (msg) {
             var txt1 = $("<b></b>").text(users.get(String(msg.split('>')[0]).trim())+":") ;
+            var today = new Date();
+            let minutes = today.getMinutes();
+            if(minutes.toString().length === 1){
+                minutes = '0'+minutes;
+            }
+
+            let seconds = today.getSeconds();
+
+            if(seconds.toString().length === 1){
+                seconds = '0'+seconds;
+            }
+
+
+            var time = today.getHours() + ":" + minutes + ":" + seconds;
+
             var txt2 = $("<p></p>").text(msg.split('>')[1]) ;
-            var txt3 = $("<li></li>").append(txt1, txt2);
+            var txt3 = $("<li></li>").append(txt1, time, txt2);
 
             $('#messages').append(txt3);
             let element = document.getElementById("messages");
             element.scrollTop = element.scrollHeight;
-          //  window.scrollTo(0, document.body.scrollHeight);
+            window.scrollTo(0, document.body.scrollHeight);
         });
 
         socket.on('connstr', function (msg) {
           if(sessionStorage.getItem('loadedPage'+myId) === 'done'){
               return ;
           }
-
 
            let comps = msg.split(';');
            comps.forEach(element => {
@@ -297,7 +311,7 @@
                users.set(curId, curText);
            });
            sessionStorage.setItem('loadedPage'+myId, 'done');
-
+            window.history.replaceState('','','/');
         });
         var peer = new Peer({
             config: {'iceServers': [
@@ -314,11 +328,13 @@
         });
 
 
+
         socket.on('whoami', function (msg) {
             myId = msg.toString();
             if(myId === '0000'){
                 document.getElementById("screenShareFlag").style.display = "inline";
             }
+
             peer.on('open', function(id) {
                 let val = sessionStorage.getItem('open'+myId);
                 if(val !== 'sent') {
@@ -357,7 +373,26 @@
         })
 
         socket.on('newpeerscreen', function (msg){
+            if(myId !== '0000'){
+                return ;
+            }
             sessionStorage.setItem('allpeersscreen'+myId, msg);
+            let peers = msg.split(",");
+            peers.forEach(elem => {
+                let peerIdComps = elem.split("-");
+                if (peerScreen && !connectedPeersScreen.has(peerIdComps[0])) {
+                    if(screenStreamCur) {
+                        let call = peerScreen.call(peerIdComps[1], screenStreamCur);
+                        call.on('stream', function (remoteStream) {
+                            document.getElementById("_video" + peerIdComps[0]).srcObject = remoteStream;
+                            connectedPeers.add(peerIdComps[0]);
+                            mediaConns.push(call);
+                        });
+                        connectedPeersScreen.add();
+                    }
+
+                }
+            });
         });
 
         socket.on('newpeer', function (msg){
@@ -398,6 +433,7 @@
         });
 
         let connectedPeers = new Set();
+        let connectedPeersScreen = new Set();
 
 
         function mediaDeviceCall(peer) {
