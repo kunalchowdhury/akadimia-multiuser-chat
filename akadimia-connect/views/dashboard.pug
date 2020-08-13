@@ -1,0 +1,12 @@
+extends layout
+
+block variables
+  - var title = "Akadimia Connect"
+
+block content
+  h2.text-center Akadimia Connect
+
+  .row
+    .offset-sm-2.col-sm-8
+      .jumbotron.text-center.
+        Welcome to your Connect page, #{user.profile.email}.
